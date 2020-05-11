@@ -1,0 +1,4 @@
+\beamer@sectionintoc {1}{The Importance of Capital}{3}{0}{1}
+\beamer@sectionintoc {2}{The Importance of Liquidity}{22}{0}{2}
+\beamer@sectionintoc {3}{Pre-crisis Vulnerabilities}{38}{0}{3}
+\beamer@sectionintoc {4}{The Crisis}{52}{0}{4}

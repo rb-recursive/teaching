@@ -1,0 +1,148 @@
+\documentclass[authoryear,11pt]{elsarticle}
+
+%This eliminates the `Preprint submitted to...' footer on the first page
+\makeatletter
+\def\ps@pprintTitle{%
+ \let\@oddhead\@empty
+ \let\@evenhead\@empty
+ \def\@oddfoot{}%
+ \let\@evenfoot\@oddfoot}
+\makeatother
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{morefloats}
+\usepackage{bbm}        %To allow \mathbb{1}
+
+\usepackage{rotating}   %To turn tables sidewaystable
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+%\onehalfspacing
+
+%\setlength{\parindent}{0pt}
+
+\usepackage[top=3.5cm,bottom=3.75cm,left=2.45cm,right=2.45cm]{geometry}% by courtesy of Mico
+
+\begin{document}
+\begin{frontmatter}
+\title{MFE Economics\\Problem set 6}
+\end{frontmatter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{`Optimal' conventional policy}
+\begin{itemize}
+\item	Compare and contrast the effects (IRFs) of the monetary policy and preference shock in the basic NK model
+\item	What do their characteristics suggest about the ability of monetary policy to offset `demand side' shocks? Give intuition - with reference to the IS curve / intertemporal decisions by households.
+\end{itemize}
+
+\subsection*{Answers}
+The effects are very similar in many respects. For many variables (output gap, output, employment, real wage and inflation) the responses to a positive (`impatient') preference shock are qualitatively like the responses to a \textit{negative} (loosening) policy shock. Both have many characteristics of typical `demand' side shocks and, in particular, move quantities and inflation in the same direction (in contrast with supply side shocks that push quantities and inflation in opposite directions). The effects are different in terms of their impacts upon the real rate (note that as discussed in Gali the effect on the nominal rate of the $v_{t}$ shock can be ambiguous under certain parameterizations due to the simultaneous effect on $\pi_{t}$ and activitiy - which enter the assumed Taylor rule). The positive $z_{t}$ shock will drive the real rate up (and since it increases inflation expectations too, clearly the nominal interest rate will rise too) whereas the negative $v_{t}$ shock will drive the real interest rate down. Intuition can be gained from re-examining the IS curve (and recalling its relationship to the Euler equation). Essentially, the preference shock makes people less willing to save, so for decisions to be consistent in equilbrium (in particular align consumption and output profiles) the real rate must rise to choke off some of that demand / incentivise savings. In the case of the monetary policy shock, the real rate is being influence by policy (the classical dichotomy doesn't hold in the short run due to price stickiness) so the incentive to save is reduced. Both these shocks make current consumption more attractive - one by operating through `preferences' (though remember the various alternative interpretations we could give to $z_{t}$) and the other through `prices' or `terms of trade'.
+
+Since the effects are so similar, this hints at the fact that, the policymaker can set the interest rate to perfectly offset demand shocks originating from fluctuations in $z_{t}$.\footnote{Another is to see that with the appropriate sized shocks in the expression for $u_{t}$ the impact on $u_{t}$ can be made to net out to zero. But I don't like the $u_{t}$ representation - as discussed in class.} If you look at the Euler equation of the representative household with $c_{t}=y_{t}$ imposed) you can see that an appropriate $v_{t}$ (hiding in $i_{t}$) can cancel out a $z_{t}$ innovation. Alternatively, if you look at the DIS in terms of the future sum of expected real rate deviations from natural, and recall that $r^{n}_{t}$ depends on $z_{t}$) you can see that an appropriate path for the policy rate an offset the effects of current and anticipated effects of $z_{t}$.
+
+\section{`Optimal' conventional policy}
+\begin{itemize}
+\item	Explain why in the basic NK model optimal policy will feature $i_{t} = r_{t}^{n}$ in equilibrium (Couple of paragraphs)
+\item	Explain why announcing a rule simply to ensure this condition is problematic? [Hint:You should consider theoretical and practical reasons] (Couple of paragraphs)
+\item	What is a Taylor rule, what are its origins and what is the `Taylor principle'? (One short paragraph)
+\end{itemize}
+
+\subsection*{Answers\footnote{As in Gali, we assume the economy starts in an initial situation of zero price dispersion, desired markup and zero inflation. We also assume there is a steady state subsidy to firms correcting for the steady state inefficiencies arising from market power.}}
+Optimal policy requires that price dispersion (and, associated with that, employment/production dispersion across goods) is eliminated. As we have seen, this will only be the case when inflation is zero as positive inflation/expected inflation interacting with sticky prices will induce price setters to adjust prices leading to different prices among firms, which will induce adjusting firms to change their prices in the next period, and so on\ldots
+
+Zero inflation can be shown to be (using the NKPC iterated forwards) implied by the elimination of current and future expected output gaps. This is the `divine coincidence' - keeping inflation at zero also achieves the stabilization of the output gap). With inflation equal to zero in all periods, the Fisher equation implies that $i_{t}=r_{t}$. In terms of the value of $r_{t}$ that will prevail, we note that price re-setters will only leave their price unchanged if it's optimal and in this case, it will be at the price implied by the desired markup, $\mathcal{M}$, which is the flex price markup. We know that under flexible prices firms are operating at their desired (not necessarily constant) natural rate, $y_{t}^{n}$ and the real rate associated with the flexible price case is $r^{n}_{t}$.
+
+Although $i_{t}=r^{n}_{t}$ will hold under optimal policy in our simple model, there are problems with taking to be be a guide for policy as it was derived under the assumption that it would ensure zero inflation and thus that $r_{t}$ would be equal to $r^{n}_{t}$. The rule is inadequately specified in the sense that it does not explain how policy will ensure that inflation is zero if, for some reason, there is some source of a `beliefs' shock that could give rise to non-zero inflation expectations.
+
+As discussed in class, correcting for this amounts to including extra terms in the rule that - in our desired equilibrium and on the equilibrium path - will turn out to be zero (so we will still have $i_{t}=r^{n}_{t}$) but which will `activate' in any case where that assumption is incorrect. Essentially the important thing to note is that if the policymaker will respond to any inflation deviations strongly enough (so that $r_{t}$ will  rise (fall) to choke of positive (negative) inflation) then that policy will eliminate those scenarios from being consistent with any equilibrium. If the response (captured by $\phi_{\pi}>1$ - the `Taylor Principle') is strong enough there is a unique equilibrium under which optimal policy is implemented. If it is too weak then there are multiple equilibria with different expectations for inflation (and output) where all but the knife edge case (of expectations somehow aligning with zero inflation) will fail to implement optimal policy ($r_{t}$ will not equal $r^{n}_{t}$ and there will be nonzero inflation and the associated price dispersion, etc.
+
+Another, more practical reason why $i_{t}=r^{n}_{t}$ is not a perfect guide in the real world (it may still give decent intuition and suggest that the policymaker should sort of try to figure out where $r_{t}^{n}$ might be) is that $r_{t}^{n}$ is unobserved and/or requires assumptions about exactly what structural model is at play. When we solve for the coefficient in the equilbrium expression for $r_{t}^{n}$ we see they are influenced - possibly - by many of the parameters and structural assumptions we made in our simple NK model. A different model will give a different measure of the natural rate and who's to say they know the right model? This gives rise (see Williams and Orphanides) to people being guided Taylor rules in practice that are simpler, rely on observables and are robust to model misspecification.
+
+Furthermore, in the real world, the natural rate of output may not be efficient (even with a hypothetical steady state subsidy) so imposing zero inflation (as an `inflation nutter' would) may not be ideal as it could lead to unacceptable deviations in output from whatever the efficient (or socially/morally desirable) level might be.
+
+Finally, if you're at the ZLB, rules for the short rate are somewhat less unhelpful, obviously.
+
+\section{Unconventional policy}
+\begin{itemize}
+\item	Why are short term interest rates bounded at zero (or small negative) a problem for monetary policy? Are they always a problem or are they particularly concerning in recent times? (Couple of short paragraphs, maybe with a few equations)
+\item	What is forward guidance and how might it affect the economy / help policymakers achieve their goals? (One paragraph, maybe with a few equations)
+\item	What is quantitative easing? Does it have the same aims as forward guidance? (Couple of short paragraphs)
+\item	Briefly describe examples of quantitative easing and forward guidance used by the Fed, BoE and ECB (set of bullet points for each)
+\end{itemize}
+
+\subsection*{Answers\footnote{You may want to look at this short paper \href{https://www.jstor.org/stable/2329320}{here}. See the rather poignant footnote on the first page.}}
+Holding cash gives a zero nominal return, which dominates the negative return implied by attempting to drive rates on savings below zero. A small negative may be possible, due to the costs and risks of storing large amounts of cash, but most people would accept that if rates were to get substantially below zero, those costs would be happily paid. People would simply start accumulating cash and ignore any assets offering a negative nominal rate. See the Black (1995) paper mentioned in the footnote.
+
+The zero lower bound has been regarded as a concern for some time - Japan for example has suffered from the constraint for a considerable period and as the theoretical possibility was discussed by Keynes and earlier. The reason it is currently a hot topic is that it was hit in the recent crisis and, due to the general decline in r-star and the low (stable and perhaps declining, perhaps not) inflation levels, there is little room for central banks to cut real rates in response to the next recession. To the extent that the power of forward guidance and QE is limited, this implies that monetary policy may not be useful in blowing the economy out of a deep recession as the zero lower bound means nominal rates can't be cut very far from where they are now, and real rates associated with the zero lower bound can't go much below the negative of expected inflation - even though approximately optimal Taylor rules might be calling for massively negative real rates, as they did during the last crisis.\footnote{See this paper for a nice discussion of how opinions have changed (though there has been a lot more discussion in recent times as the Fed has been considering its monetary policy framework - e.g. debating temporary price level targeting and so forth\ldots).}
+
+Forward guidance can be most easily understood with reference to the DIS
+\begin{eqnarray*}
+\tilde{y}_{t} &=& E_{t} \left[ \tilde{y}_{t+1} \right] - \frac{1}{\sigma} \left(i_{t} - E_{t}\left[ \pi_{t+1} \right]  - r^{n}_{t} \right) \label{eqn:dyn_IS} \\
+&=& -\frac{1}{\sigma} \sum\limits_{k=0}^{\infty} E_{t}[ r_{t+k}  - r^{n}_{t+k} ] \nonumber \\
+&=& -\frac{1}{\sigma} \sum\limits_{k=0}^{\infty} E_{t}[ i_{t+k} -  (r^{n}_{t+k} + \pi_{t+k+1}) ] \nonumber
+\end{eqnarray*}
+We see that \textit{\textbf{if}} the policymaker can influence expectations of inflation and \textit{in particular} future policy actions (values for $i_{t+k}$) then it is possible that conveying this information may influence decisions today and, ultimately, activity and inflation today. It is very subtle how this influence might occur. For example, agents might initially expect the policymaker to follow a Taylor rule, but the central bank might claim that even if the rule implies raising $i_{t}$ above the ZLB at a certain horizon $T$ or for it to thereafter rise at a certain pace, he/she may claim - hopefully credibly - that they will keep the rate \href{https://www.reuters.com/article/us-usa-fed-williams/feds-williams-makes-case-for-lower-for-longer-rates-idUSKCN1S91OE}{`lower for longer'}. Additionally, one might imagine a policymaker credibly committing to higher than previously expected inflation by, say, formally changing the interpretation of its price stability mandate to allow for temporary price level targeting - implying that after a period of excessively low inflation, inflation will be allowed to `overshoot' the traditional inflation target. The aim of the game is to manipulate the current and future real rate deviations that are associated with the output gap via the DIS curve (note that there may also be wealth effects too - if confidence or asset prices are stimulated).
+
+Quantitative easing in some respects has the same ultimate aims as FG - the idea is to stimulate the economy, prevent suboptimal use of resources and to promote price stability. Some of its intermediate goals may also be the same. To the extent that FG aims to lower longer term rates (lowering expectations of the future short rate should show up in longer yields - which may drive investment and mortgage lending - via the expectations hypothesis) the approach may be thought similar to FG. Additionally some (Bauer and Rudebsuch) have argued that actions in terms of asset purchases may influence long rates by conveying information about what the Fed may do with the short rate in the future (`signaling channel'). Most discussions of QE are rather confused as the exact theory of why/if they work is not yet nailed down (see \href{https://en.wikipedia.org/wiki/Wallace_neutrality}{here} for an extreme argument why it may not work at all). Nevertheless, some of the channels suggested are:
+\begin{itemize}
+\item	Confidence
+\item	Signaling
+\item	Enhancing credibility
+\item	Dispelling markets' misunderstanding of central bank's preferences/beliefs
+\item	Driving down the premium embedded in long rates
+\item	Removing `duration' from the market - once the Fed has bought up a lot of MBS and long-dated Treasuries (which have long duration) market participants must find it elsewhere - through holding other assets that are imperfect substitutes such as risky corporate investments, mortgage lending and other securities whose rates will then be pushed down (prices up), again perhaps stimulating rate-sensitive purchases
+\item	Segmented markets - underpins various channels that might violate the assumptions of the \href{Wallace neutrality}{Wallace neutrality results} - see \href{https://personal.lse.ac.uk/vayanos/WPapers/PHMTSIR.pdf}{this paper} and focus on the introductory intuition - the rest of the paper will be too difficult
+\item	Strengthening bank balance sheets - arguably promoting risky (and non risky) assets' prices will enhance bank net worth (recall the discussion of the importance of bank net worth in the final lecture) and perhaps stimulate bank lending
+\item	Weakening the exchange rate (more a possibly by-product than a direct aim) and thus stimulating net exports, giving a cost-push boost to inflation
+\end{itemize}
+
+\section{Financial crisis}
+\begin{itemize}
+\item	Explain what a repurchase agreement is? In what sense is it a form of collateralized loan? (A short paragraph maybe with a couple of equations)
+\item	Why do regulators set minimum capital ratios for banks? Why might net worth be particularly important for banks (as opposed to for non-financial firms) from a regulatory perspective? [Hint: You should mention externalities and deposit insurance somewhere]. (Two or three short paragraphs.)
+\item	In the Diamond-Dybvig-esque model discussed in class\ldots (all of these should be a few sentences)
+	\begin{itemize}
+	\item	What aspects of it capture shocks to `liquidity'?
+	\item	What aspects of it capture the role of banks in liquidity provision?
+	\item	How do the good and bad equilibria differ in terms of agents' beliefs?
+	\item	In what sense is the bad equilibrium actually `bad'?
+	\item	Suppose a government introduced a `deposit insurance scheme' - how would that affect the thought process of the type 2 agent?
+	\item	Suppose banks can `suspend convertibility' (ie. just refuse to pay out in a panic), would that `fix' the problem? Is it a sensible policy?
+	\item	Suppose the central bank provides a `lender of last resort' role for banks (look this up - along with the `deposit window'), how might that help?\footnote{You should also figure out who Bagehot was and how to pronounce his name\ldots}
+	\end{itemize}
+\item	Why did the exaggerated use by banks of repo leading up to the crisis render the system extremely vulnerable? (Paragraph or so)
+\end{itemize}
+
+\subsection*{Answers}
+An agent (borrower) with a certain asset wants to borrow funds. She sells the asset to another agent (lender) under the agreement to buy it back (\textit{repurchase} - `repo') at a future date at a certain price. This is a loan, in the sense that a load of money is given to the borrower at the start (from the sale of the asset) and then the borrower gives money back to the bank (through the repurchase). The interest rate is defined by the ratio of the repurchase price to the initial sale price. The loan is `collateralized' as over the course of the loan, the lender has a claim to the asset such that if the borrower reneges on the agreement, the lender can keep the collateral.
+
+Note that the lender may only hand over at the start of the loan an amount less than the current `price'/`value' of the underlying asset collateralizing the loan. This is referred to as imposing a `haircut'. It means that the borrower must tie up an asset of value, say, $V$, in order to obtain a loan of amount $L<V$. Note the borrower agrees (at the start of the contract) to repurchase at price $P$ so that the implied gross interest rate is $P/V$. Note also that the haircut means that the lender is protected to some extent against the risk of the collateral value falling such that, under a default situation, they might not recoup their outlay on selling the collateral (or taking it onto their balance sheet and revaluing it down).
+
+Some important reasons why regulators set capital ratios on banks are:
+\begin{enumerate}
+\item	There is a market failure arising from externalities imposed on the rest of the financial system/economy on the collapse of (especially a large) bank. These are not internalized by banks when they make their investment decisions. Not taking these externalities into account may lead to excessively risky investing so that requiring extra loss-absorbing capital can improve welfare. Similar arguments for the existence of excessive risk taking can be made by appealing to misalignment of incentives of management/short term-ist shareholders if their compensation exposes them only to upside risk or if they expect to be bailed out in a crisis (and the government can't credibly commit to wiping shareholders out).
+\item	Capital ratios may - through some channel - enhance depositor confidence so that an initial shock doesn't (somehow!) cause a shift in beliefs of the sort discussed in Diamon-Dybvig (because one might imagine that fears of solvency could induce a desire to withdraw early). In addition, a policy that can protect against a bank run - deposit insurance - may (if, as is typical, it's not carefully priced in terms of insurance premia paid by banks to the FDIC or whoever) blunt the incentive for bank investors (in this case depositors) to monitor the banks' investments carefully, again increasing the chances of excessively risky investment by the banks.
+\end{enumerate}
+
+In Diamond-Dybvig type models liquid assets are the cash stuck under the bed and the demand deposits issued by the bank that (subject to solvency) allow withdrawal whenever agents want (regardless of type). Thus the bank provides an alternative liquid asset (deposits). A `demand for liquidity' arises when certain agents realize they `need' (modeled as preferences in the paper but think of it as suddenly you need to withdraw) cash immediately. If they have deposits they will withdraw them. Type 2 agents may also demand liquidity in the bad equilibrium though their motivates are different.
+
+The beliefs we care about when comparing the good an bad equilibrium are those of the type 2 agents. Type 1 always will withdraw what they can in the middle period, regardless of their beliefs. When considering if an action is part of an equilibrium we check to see if when everyone is behaving in the way that the candidate equilibrium specifies, a given single agent will choose that action under her optimal plan, given her beliefs. If the a type 2 agent believes all type 2 agents are going to wait until the final period to withdraw (at which time the bank will have enough resources to allow them to consumer $C+{t}^{\ast}$ then they will choose to wait until the last period to withdraw as $C_{2}^{\ast}$ is greater than the consumption she would obtain by withdrawing in the middle period, sticking it under the mattress and eating $C_{1}^{\ast}$ in the last period. If she believes all the other type 2 agents are withdrawing in the middle period, then she will try to withdraw then too as there will be nothing left over in the final period.
+
+In the bad equilibrium, resources are wasted as clearly we are not implementing the panning optimum - intuitively, we `want' investment in the illiquid (have to take a loss captured by $s$ if liquidated early) but high returning asset and then somehow allocate resources to agents such that the outcome is better than autarky and what can be achieved with a bond market. That's why the equilibrium is `bad'.
+
+If there is a deposit scheme then the agent's though process above is short-circuited. Even if people withdraw, the government (assuming they can afford it - see Ireland, Iceland, Portugal,\ldots) will ensure they get their promised deposits back.
+
+By suspending convertibility, banks simply refuse to honor some or all withdrawal requests such that they retain enough finance to continue funding the long term project or to buy themselves time to liquidate at a better price or to see out the period of panic. The problem with his is quite simple - they're keeping peoples' money from them and reneging on the deposit agreement. In some cases, this could cause enormous hardship and trauma that could also lower the bank's franchise value and worsen its reputation (storing up trouble for the future).
+
+Bagehot's work claims that a central bank (or some other official body) should be willing to replace/back up banks' funds when it's depositors are running as a `lender of last resort', \textit{provided that the bank is solvent}. Often this may come down to whether than bank has adequate assets to act as collateral (see discussions of why the Fed did not `bail out' Lehman over concerns about whether a loan could be adequately collateralized / whether Lehman overall was solvent). In the Diamond-Dybvig case there is the interesting property that it is a \textit{liquidity} drain (owing to the fundamental service banks provide to us depositors!) that, given the \textit{illiquidity} of the long term asset, can induce the bank to become \textit{insolvent} (interaction between liquidity and solvency - which was a hallmark of the crisis and shows up in firesale models). If the bank, say, could secure a loan from a LOLR using the long term asset (which we know it can since the good equilibrium shows that if it's funded to maturity it pays off enough) then the very possibility of going to the LOLR will knock out the fears type 2 agents may have, and actually (economics is cool sometimes) eliminate the bad equilibrium from being an equilibrium at all!\footnote{You can see how doubts about the quality of assets due to their opacity and complexity may make it difficult for a LOLR to distinguish a `fundamental' solvency problem from a liquidity-induced solvency problem.}
+
+Banks had increased the fraction of their (enormous) balance sheets they were funding in short term, wholesale markets - especially in repo (maybe even overnight repo). In some sense, money market funds and corporate treasuries, played the role of depositors in Diamond-Dybvig. They fundamentally wanted liquidity and maybe a slightly better return than holding cash or dumping things in bank accounts. So although they were very risk averse - they were for a time willing to lend in repo. Once there was any hint of problems in terms of repayment, even short delays to liqduidating collateral or small risks of the collateral losing value beyond the haircut, these sophisticated investors will run - and refuse to roll over debt except at absurdly high haircuts (see the Gorton and Metrick paper). This is especially the case as (initially at least) there was no facility like deposit insurance for lenders to banks in wholesale funding markets, in contrast to the case of households (who also generally are pretty slow to react anyway - leading to retail deposits by household being a fairly sticky/stable source of funding.
+
+\end{document}
+

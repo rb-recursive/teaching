@@ -1,0 +1,1687 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     83473,       1679]
+NotebookOptionsPosition[     75796,       1534]
+NotebookOutlinePosition[     76143,       1549]
+CellTagsIndexPosition[     76100,       1546]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Functions", "Section",
+ CellChangeTimes->{{3.7818534942982407`*^9, 
+  3.7818534951169972`*^9}},ExpressionUUID->"4ce6c12f-95a4-4ec7-b387-\
+32032cb3ffc7"],
+
+Cell[CellGroupData[{
+
+Cell["Utilities", "Subsection",
+ CellChangeTimes->{{3.781856758725215*^9, 
+  3.7818567601106615`*^9}},ExpressionUUID->"c502ebe2-1237-4f0f-9398-\
+2028a56ed312"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"RegEx", "[", "regex_String", "]"}], ":=", 
+   RowBox[{"RegularExpression", "[", "regex", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7818537564168777`*^9, 3.7818537861634555`*^9}, {
+  3.7818546334570246`*^9, 
+  3.781854634793751*^9}},ExpressionUUID->"e4dc6504-5f01-43d3-b871-\
+e0d517d7f7fb"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Parsing", "Subsection",
+ CellChangeTimes->{{3.781856828918911*^9, 
+  3.7818568297306824`*^9}},ExpressionUUID->"b7ecca81-2c50-4e2b-b147-\
+7e2a8967622b"],
+
+Cell[CellGroupData[{
+
+Cell["Finding lines that contain a certain regex", "Subsubsection",
+ CellChangeTimes->{{3.7818608241190033`*^9, 
+  3.781860838493293*^9}},ExpressionUUID->"4f58d210-c1ca-45e8-b354-\
+9504c682def8"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"FindLines", "[", 
+    RowBox[{"doc_", ",", "regex_"}], "]"}], ":=", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "doclines", ",", "linespos", ",", "lines", ",", "casesbyline", ",", 
+       "casesoverall"}], "}"}], ",", "\[IndentingNewLine]", 
+     "\[IndentingNewLine]", 
+     RowBox[{"(*", 
+      RowBox[{
+      "Check", " ", "if", " ", "document", " ", "still", " ", "big", " ", 
+       "long", " ", "string", " ", "or", " ", "split", " ", "into", " ", 
+       "lines", " ", 
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"in", " ", "latter", " ", "case"}], ",", " ", 
+         RowBox[{"do", " ", "the", " ", "splitting"}]}], ")"}]}], "*)"}], 
+     "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"ListQ", "@", "doc"}], ",", 
+        RowBox[{"doclines", "=", "doc"}], ",", 
+        RowBox[{"doclines", "=", 
+         RowBox[{"StringSplit", "[", 
+          RowBox[{"doc", ",", "\"\<\\n\>\""}], "]"}]}]}], "]"}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "Quiet", " ", "here", " ", "as", " ", "seems", " ", "to", " ", "work",
+          " ", "though", " ", "throws"}], "..."}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{
+      "(*", "\"\<String or list of strings expected at position 1 in \
+StringContainsQ[List,RegularExpression[...]]\>\"", "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"linespos", "=", 
+       RowBox[{"Quiet", "[", 
+        RowBox[{
+         RowBox[{"Position", "[", 
+          RowBox[{"_", "?", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"StringContainsQ", "[", 
+              RowBox[{"#", ",", "regex"}], "]"}], "&"}], ")"}]}], "]"}], "@", 
+         "doclines"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{"Extract", " ", "the", " ", "lines"}], "*)"}], 
+      "\[IndentingNewLine]", 
+      RowBox[{"lines", "=", 
+       RowBox[{"Extract", "[", 
+        RowBox[{"doclines", ",", "linespos"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "Extract", " ", "any", " ", "captures", " ", "in", " ", "each", " ", 
+         "line"}], " ", "-", " ", 
+        RowBox[{"Empty", " ", "lists", " ", "if", " ", "RegEx", " ", 
+         RowBox[{"doesn", "'"}], "t", " ", "contain", " ", "capture"}]}], 
+       "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"casesbyline", "=", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"StringCases", "[", 
+          RowBox[{"#", ",", 
+           RowBox[{"regex", "\[Rule]", "\"\<$1\>\""}]}], "]"}], "&"}], "/@", 
+        "lines"}]}], ";", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"(*", 
+       RowBox[{
+        RowBox[{
+        "Extract", " ", "any", " ", "captures", " ", "in", " ", "whole", " ", 
+         "document"}], " ", "-", " ", 
+        RowBox[{"Empty", " ", "list", " ", "if", " ", "RegEx", " ", 
+         RowBox[{"doesn", "'"}], "t", " ", "contain", " ", "capture"}]}], 
+       "*)"}], "\[IndentingNewLine]", 
+      RowBox[{"casesoverall", "=", 
+       RowBox[{"DeleteDuplicates", "[", 
+        RowBox[{"Join", "@@", "casesbyline"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"Return", "[", 
+       RowBox[{"{", 
+        RowBox[{
+        "linespos", ",", "lines", ",", "casesbyline", ",", "casesoverall"}], 
+        "}"}], "]"}], ";"}]}], "\[IndentingNewLine]", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.78185349641757*^9, 3.7818534996498823`*^9}, {
+  3.7818537204781075`*^9, 3.781853754330634*^9}, {3.7818539782028475`*^9, 
+  3.7818540388058667`*^9}, {3.781854658022932*^9, 3.7818546588597*^9}, {
+  3.7818550014976945`*^9, 3.7818550721552725`*^9}, {3.7818551399536023`*^9, 
+  3.7818551955913982`*^9}, {3.781855399075074*^9, 3.7818554163299723`*^9}, {
+  3.781855640118202*^9, 3.78185564635631*^9}, {3.7818556863635406`*^9, 
+  3.7818557845072994`*^9}, {3.7818563019069138`*^9, 3.781856318654847*^9}, {
+  3.7818563567753363`*^9, 3.781856389541836*^9}, {3.7818564550097513`*^9, 
+  3.78185652589114*^9}, {3.7818565566348915`*^9, 3.781856639812377*^9}, {
+  3.781856672072628*^9, 
+  3.7818567097150555`*^9}},ExpressionUUID->"be4dccd3-dc66-4788-8daa-\
+84beccd69fdf"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["\<\
+Dropping lines that contain a certain regex or, through overloading, one of a \
+list of regex\
+\>", "Subsubsection",
+ CellChangeTimes->{{3.7818608493221445`*^9, 
+  3.7818608706334934`*^9}},ExpressionUUID->"bf64454c-d6d7-4949-b03e-\
+ae26acf7f071"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"DropLinesContainingRegEx", "[", 
+    RowBox[{"lines_", ",", "regex_RegularExpression"}], "]"}], ":=", 
+   RowBox[{"DeleteCases", "[", 
+    RowBox[{"lines", ",", 
+     RowBox[{"_", "?", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"StringContainsQ", "[", 
+         RowBox[{"#", ",", "regex"}], "]"}], "&"}], ")"}]}]}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.781860028516569*^9, 3.781860050790388*^9}, {
+  3.781860081372035*^9, 3.7818601055289536`*^9}, {3.7818606860029693`*^9, 
+  3.781860689432988*^9}},ExpressionUUID->"8ec0afa6-f00e-4057-8a9b-\
+e8acf71f3f16"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"DropLinesContainingRegEx", "[", 
+    RowBox[{"lines_", ",", "regex_List"}], "]"}], ":=", 
+   RowBox[{"Fold", "[", 
+    RowBox[{"DropLinesContainingRegEx", ",", "lines", ",", "regex"}], "]"}]}],
+   ";"}]], "Input",
+ CellChangeTimes->{{3.781860610509248*^9, 3.7818606337760243`*^9}, {
+  3.781860698650339*^9, 
+  3.7818607460521235`*^9}},ExpressionUUID->"d6189623-8fbf-4541-a693-\
+7f1f718e4673"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Regular Expressions", "Section",
+ CellChangeTimes->{{3.7818567730751905`*^9, 
+  3.7818567766950865`*^9}},ExpressionUUID->"67344577-53b5-49a2-9bbf-\
+e3d55078276a"],
+
+Cell[CellGroupData[{
+
+Cell["Things we want / may want", "Subsection",
+ CellChangeTimes->{{3.7818613005805025`*^9, 3.7818613024509287`*^9}, {
+  3.7818739978680925`*^9, 
+  3.7818739999200935`*^9}},ExpressionUUID->"38c6542e-b466-45ee-933f-\
+a4f1daa9d460"],
+
+Cell[CellGroupData[{
+
+Cell["Package information", "Subsubsection",
+ CellChangeTimes->{{3.781861309082804*^9, 
+  3.781861311706914*^9}},ExpressionUUID->"f60adaa9-9b3f-4a36-bf54-\
+56c8c978201b"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"packageRegEx", "=", 
+   RowBox[{"RegEx", "[", "\"\<\\\\\\\\usepackage{(\\\\w+)}\>\"", "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.7818538421216717`*^9, 3.7818539567261095`*^9}, 
+   3.781854264821645*^9, {3.7818546136372104`*^9, 3.7818546273760233`*^9}, {
+   3.78185678216357*^9, 3.781856816166639*^9}, {3.7818612903681865`*^9, 
+   3.7818612906649756`*^9}, 
+   3.781862242244754*^9},ExpressionUUID->"d290a587-14f8-4b6e-95d2-\
+e7c6f963525c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["New environment", "Subsubsection",
+ CellChangeTimes->{{3.781875990725218*^9, 
+  3.7818759929373927`*^9}},ExpressionUUID->"702132da-7e7c-4a8b-a640-\
+646edf585853"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"newenvRegEx", "=", 
+   RowBox[{
+   "RegEx", "[", 
+    "\"\<\\\\\\\\newenvironment{\\\\w+}([\\\\w+])*({.+}){1,2}\>\"", "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.7818759992363977`*^9, 
+  3.781876102502449*^9}},ExpressionUUID->"0bd4ed77-aaf3-4271-922b-\
+02e19517f0e4"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Theme", "Subsubsection",
+ CellChangeTimes->{{3.781876562701088*^9, 3.7818765634130387`*^9}, 
+   3.781876707370902*^9},ExpressionUUID->"0b39541b-2fe6-413f-8e40-\
+d2d8746c5048"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"themeRegEx", "=", 
+   RowBox[{"RegEx", "[", "\"\<\\\\\\\\usetheme{(\\\\w+)}\>\"", "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.7818765835219707`*^9, 3.7818766177939262`*^9}, {
+  3.781876699834866*^9, 
+  3.7818767295388694`*^9}},ExpressionUUID->"b3111f78-64cd-4905-8f77-\
+5372af60d6cf"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Set counter", "Subsubsection",
+ CellChangeTimes->{{3.7818773130674777`*^9, 3.781877314863472*^9}, 
+   3.781877366225317*^9},ExpressionUUID->"29034da3-e6d3-478d-a54f-\
+762a093aaf75"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"setcounterRegEx", "=", 
+   RowBox[{
+   "RegEx", "[", "\"\<\\\\\\\\setcounter{(\\\\w+)}{(\\\\d+)}\>\"", "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.781877324099335*^9, 
+  3.781877357445279*^9}},ExpressionUUID->"4d2120f7-d30c-4dc6-b34e-\
+f76294df4ff2"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Things we don\[CloseCurlyQuote]t want", "Subsection",
+ CellChangeTimes->{{3.781861318218639*^9, 
+  3.781861320540985*^9}},ExpressionUUID->"8146b545-6d5e-4761-a8ea-\
+0581680c1ecd"],
+
+Cell[CellGroupData[{
+
+Cell["To remove the unnecessary frame title nonsense", "Subsubsection",
+ CellChangeTimes->{{3.781862204235417*^9, 
+  3.781862212979003*^9}},ExpressionUUID->"4974f9bc-2184-4563-b5c8-\
+b64385dea4ed"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cleanframetitleRegEx", "=", 
+   RowBox[{
+   "RegEx", "[", "\"\<%\\\\s+%EndExpansion\\\\s+\\\\\\\\QTR{frametitle}\>\"", 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7818622153227854`*^9, 
+  3.781862226859889*^9}},ExpressionUUID->"00fa86f7-85b4-41ef-b32b-\
+4406e0c92fcc"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["To clean some floating end of lines", "Subsubsection",
+ CellChangeTimes->{{3.781864962604021*^9, 
+  3.781864968015912*^9}},ExpressionUUID->"89f67f7a-0418-4e3b-943d-\
+7dca01ccfcae"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cleanfloatingpctgap", "=", 
+   RowBox[{"RegEx", "[", "\"\<%\\\\s*\\\\n}\>\"", "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781864907883795*^9, 3.7818649502238035`*^9}, {
+  3.78186501670794*^9, 3.7818650171678143`*^9}, {3.7818651047885747`*^9, 
+  3.781865106132308*^9}, {3.781865151991161*^9, 
+  3.7818651628031764`*^9}},ExpressionUUID->"3054dc62-a288-4a7d-a503-\
+e66cbb83c998"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["To drop lines", "Subsubsection",
+ CellChangeTimes->{{3.7818583619913635`*^9, 3.781858370464095*^9}, {
+   3.781861010021515*^9, 3.781861022027862*^9}, {3.781861057005358*^9, 
+   3.7818610594184823`*^9}, {3.7818611127500095`*^9, 
+   3.7818611136928115`*^9}, {3.7818766681910915`*^9, 3.7818766686909156`*^9}, 
+   3.7818967521775236`*^9},ExpressionUUID->"6a8eeb3b-7304-46e9-b8e3-\
+2fe4bbc73750"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"interestingdrop", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"\"\<\\\\\\\\\>\"", "<>", "#"}], "&"}], "/@", 
+    RowBox[{"{", 
+     RowBox[{
+     "\"\<newenvironment\>\"", ",", "\"\<usepackage\>\"", ",", 
+      "\"\<usetheme\>\"", ",", "\"\<setcounter\>\""}], "}"}]}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.781877496962482*^9, 3.781877524852744*^9}, {
+  3.781896824725089*^9, 
+  3.781896837317313*^9}},ExpressionUUID->"69755051-0546-439c-a24b-\
+19c8fc81c1c8"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"garbagedrop", "=", 
+   RowBox[{"{", 
+    RowBox[{
+    "\"\<%(Begin|End)Expansion\>\"", ",", "\"\<\\\\\\\\transboxout\>\"", ",", 
+     "\"\<tcilatex\>\"", ",", "\"\<\\\\d*multibyte\>\"", ",", 
+     "\"\<%\\\\W*$\>\"", ",", "\"\<^%TCI\>\""}], "}"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781877528336951*^9, 3.78187753900875*^9}, {
+  3.781929448350211*^9, 3.781929486947812*^9}, {3.781929821153927*^9, 
+  3.781929823778255*^9}, {3.7819298688974705`*^9, 3.7819300751791863`*^9}, {
+  3.7819301056305733`*^9, 3.781930153762806*^9}, {3.7819306351896954`*^9, 
+  3.7819306385014057`*^9}},ExpressionUUID->"b896d36a-7345-4941-96d5-\
+4871c59d68c7"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"frontmatterdrop", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"\"\<\\\\\\\\\>\"", "<>", "#"}], "&"}], "/@", 
+    RowBox[{"{", 
+     RowBox[{
+     "\"\<title(\\\\[\\\\w+\\\\])?{\\\\w+}\>\"", ",", 
+      "\"\<author(\\\\[\\\\w+\\\\])?{\\\\w+}\>\"", ",", 
+      "\"\<institute(\\\\[\\\\w+\\\\])?{\\\\w+}\>\"", ",", 
+      "\"\<date{\\\\w+}\>\""}], "}"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7818778180575857`*^9, 3.781877847287424*^9}, {
+   3.781878055729083*^9, 3.781878160371497*^9}, {3.7818963957636924`*^9, 
+   3.781896410151707*^9}, {3.7818964599713044`*^9, 3.7818965399633093`*^9}, {
+   3.781896787069336*^9, 3.7818968069573307`*^9}, 3.781929659906683*^9, 
+   3.781929752015935*^9},ExpressionUUID->"a8a38447-458f-4dda-b2db-\
+c47ccdd66072"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"droplineRegEx", "=", 
+   RowBox[{"RegEx", "/@", 
+    RowBox[{"Join", "[", 
+     RowBox[{"interestingdrop", ",", "garbagedrop", ",", "frontmatterdrop"}], 
+     "]"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7818573886243362`*^9, 3.7818574986237593`*^9}, 
+   3.781857764196632*^9, {3.7818588541665163`*^9, 3.7818588626057673`*^9}, {
+   3.781860925437092*^9, 3.7818609344013243`*^9}, {3.7818609646003447`*^9, 
+   3.7818609882593246`*^9}, {3.7818612349254694`*^9, 3.781861246094221*^9}, {
+   3.7818619574736433`*^9, 3.7818619631853695`*^9}, {3.781862007712304*^9, 
+   3.781862021660972*^9}, {3.781864590229006*^9, 3.7818646010810413`*^9}, 
+   3.781864785869809*^9, {3.781873520870612*^9, 3.781873554438574*^9}, {
+   3.7818765228170686`*^9, 3.781876531509075*^9}, {3.781876671918878*^9, 
+   3.781876699842868*^9}, {3.781876783145563*^9, 3.781876783589572*^9}, {
+   3.781877477526512*^9, 3.781877491354475*^9}, {3.7818775219647055`*^9, 
+   3.781877556168932*^9}, {3.7818968572170906`*^9, 3.781896891719248*^9}, {
+   3.7819295185497437`*^9, 3.7819295217522173`*^9}, {3.781929590925503*^9, 
+   3.7819295926592703`*^9}, {3.7819297050691423`*^9, 
+   3.7819297086777763`*^9}, {3.7819297392128754`*^9, 
+   3.7819297414155006`*^9}, {3.781929875395689*^9, 
+   3.7819298949792976`*^9}},ExpressionUUID->"f31d50b9-8ef3-4fa7-a48c-\
+fc755fd2e30a"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["To delete stuff (though not necessarily the whole line)", \
+"Subsubsection",
+ CellChangeTimes->{{3.781861037301355*^9, 3.7818610667170515`*^9}, {
+   3.7818768421838827`*^9, 3.7818768434238825`*^9}, 
+   3.7818967568533354`*^9},ExpressionUUID->"31106893-8537-44f1-bf71-\
+5233941687cc"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"deleteRegEx", "=", 
+   RowBox[{"RegEx", "/@", 
+    RowBox[{"{", 
+     RowBox[{
+     "\"\<%\\\\s+$\>\"", ",", "\"\<\\\\[notes=show\\\\]\>\"", ",", 
+      "\"\<[^%]%$\>\""}], "}"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781859763041294*^9, 3.7818598185056477`*^9}, {
+  3.781864677352557*^9, 3.781864680996354*^9}, {3.7818652430551653`*^9, 
+  3.781865259019137*^9}, {3.781865339642897*^9, 3.7818653484228992`*^9}, {
+  3.781873303148137*^9, 3.7818733065682774`*^9}, {3.7818733413004045`*^9, 
+  3.781873383316399*^9}},ExpressionUUID->"c5dc0660-34a9-492d-a7f8-\
+4b915b2d3dbc"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["To replace stuff (though not necessarily the whole line)", \
+"Subsubsection",
+ CellChangeTimes->{{3.781861037301355*^9, 3.7818610667170515`*^9}, {
+  3.7818659622352743`*^9, 3.781865962875411*^9}, {3.781876845463649*^9, 
+  3.781876846083643*^9}, {3.78189676294135*^9, 
+  3.781896764581504*^9}},ExpressionUUID->"2778c07d-8fa5-4cc2-b269-\
+1660ca97ba94"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"replaceRegEx", "=", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"RegEx", "@", 
+        RowBox[{"First", "@", "#"}]}], ",", 
+       RowBox[{"Last", "@", "#"}]}], "}"}], "&"}], "/@", 
+    RowBox[{"{", 
+     RowBox[{"{", 
+      RowBox[{"\"\<\\\\\\\\dsum\>\"", ",", "\"\<\\\\\\\\sum\>\""}], "}"}], 
+     "}"}]}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7818659937744193`*^9, 3.7818659984984665`*^9}, {
+   3.78186622657176*^9, 3.7818662906110964`*^9}, {3.781866339757493*^9, 
+   3.7818663660375175`*^9}, 3.7818664029535356`*^9, {3.7818737501989822`*^9, 
+   3.781873757647025*^9}, {3.7818763555285406`*^9, 3.7818763644485464`*^9}, {
+   3.7818772595820165`*^9, 
+   3.781877270917996*^9}},ExpressionUUID->"392bfa32-8053-4c71-b0fb-\
+6b6991c948c0"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Cleaning the document", "Section",
+ CellChangeTimes->{{3.781856836263461*^9, 3.781856836748148*^9}, {
+  3.7818613348834105`*^9, 
+  3.7818613374186573`*^9}},ExpressionUUID->"fbbd63c4-6062-43f4-9bf1-\
+d9dbaa56cd48"],
+
+Cell[CellGroupData[{
+
+Cell["Document admin", "Subsection",
+ CellChangeTimes->{{3.781858389562187*^9, 
+  3.7818583913341656`*^9}},ExpressionUUID->"461b2e2a-49b7-44ee-be95-\
+733a6833db2a"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+  "SetDirectory", "[", 
+   "\"\<C:\\\\Users\\\\rhysb\\\\Google \
+Drive\\\\Sabbatical\\\\Oxford\\\\Macroeconomics\\\\MFE_Macro_Bidder\\\\\
+Lecture_2\>\"", "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.781853177636434*^9, 3.781853179774717*^9}, {
+  3.7818532407257195`*^9, 
+  3.7818532623121524`*^9}},ExpressionUUID->"ceac724a-1d02-41eb-9287-\
+8192d1b7852e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"sciwdocstring", "=", 
+   RowBox[{"Import", "[", 
+    RowBox[{"\"\<martin.tex\>\"", ",", "\"\<Text\>\""}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.78185328251917*^9, 3.78185339819067*^9}, {
+   3.781861652372895*^9, 3.7818617139605026`*^9}, 3.7819303514991283`*^9, 
+   3.7819304799312477`*^9},ExpressionUUID->"593a3985-7c97-48a6-83de-\
+2ab445d5631f"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"sciwdocstringclean", "=", 
+  RowBox[{"StringReplace", "[", 
+   RowBox[{"sciwdocstring", ",", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"cleanframetitleRegEx", "\[Rule]", "\"\<\>\""}], ",", 
+      RowBox[{"cleanfloatingpctgap", "\[Rule]", "\"\<}\>\""}]}], "}"}]}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.7818617586899815`*^9, 3.7818619219455147`*^9}, 
+   3.7818622531626635`*^9, 3.781864986235803*^9, {3.78186502808782*^9, 
+   3.7818650379837685`*^9}, 
+   3.7819304826337376`*^9},ExpressionUUID->"b5582a43-d8ff-411c-a116-\
+a9cd11111369"],
+
+Cell[BoxData["\<\"%2multibyte Version: 5.50.0.2960 CodePage: \
+65001\\n\\n\\\\documentclass[notes=show]{beamer}\\n%%%%%%%%%%%%%%%%%%%%%%%%%%%\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\\n\\\\\
+usepackage{amsmath}\\n\\\\usepackage{mathpazo}\\n\\\\usepackage{hyperref}\\n\\\
+\\usepackage{multimedia}\\n\\n\\\\setcounter{MaxMatrixCols}{10}\\n%TCIDATA{\
+OutputFilter=LATEX.DLL}\\n%TCIDATA{Version=5.50.0.2960}\\n%TCIDATA{Codepage=\
+65001}\\n%TCIDATA{<META NAME=\\\"SaveForMode\\\" \
+CONTENT=\\\"1\\\">}\\n%TCIDATA{BibliographyScheme=Manual}\\n%TCIDATA{Created=\
+Tuesday, September 11, 2018 09:32:18}\\n%TCIDATA{LastRevised=Thursday, August \
+08, 2019 09:27:23}\\n%TCIDATA{<META NAME=\\\"GraphicsSave\\\" \
+CONTENT=\\\"32\\\">}\\n%TCIDATA{<META NAME=\\\"DocumentShell\\\" \
+CONTENT=\\\"Other Documents\\\\SW\\\\Slides - \
+Beamer\\\">}\\n%TCIDATA{Language=American \
+English}\\n%TCIDATA{CSTFile=beamer.cst}\\n\\n\\\\newenvironment{stepenumerate}\
+{\\\\begin{enumerate}[<+->]}{\\\\end{enumerate}}\\n\\\\newenvironment{\
+stepitemize}{\\\\begin{itemize}[<+->]}{\\\\end{itemize} \
+}\\n\\\\newenvironment{stepenumeratewithalert}{\\\\begin{enumerate}[<+-| \
+alert@+>]}{\\\\end{enumerate}}\\n\\\\newenvironment{stepitemizewithalert}{\\\\\
+begin{itemize}[<+-| alert@+>]}{\\\\end{itemize} }\\n\\\\usetheme{Madrid}\\n\\\
+\\input{tcilatex}\\n\\\\begin{document}\\n\\n\\\\title[D(S)GE and \
+Growth]{Dynamic (Stochastic) General Equilibrium and \
+Growth}\\n\\\\author{Martin Ellison}\\n\\\\institute[Nuffield]{Nuffield \
+College}\\n\\\\date{Michaelmas Term \
+2018}\\n\\\\maketitle\\n\\n\\\\section{DGE}\\n\\n%TCIMACRO{\\\\TeXButton{\
+BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{\
+Macroeconomics is Dynamic}\\n\\n\\\\begin{center}\\nDecisions are taken over \
+time\\\\FRAME{ftbpF}{2.1767in}{1.3396in}{0pt}{}{}{%\\nFigure}{\\\\special{\
+language \\\"Scientific Word\\\";type\\n\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display \\\"USEDEF\\\";valid_file \\\"T\\\";width\\n2.1767in;height \
+1.3396in;depth 0pt;original-width 4.2973in;original-height\\n2.623in;cropleft \
+\\\"0\\\";croptop \\\"1\\\";cropright \\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZU5W00.wmf';tempfile-properties \\\"XPR\\\";}}\\n\
+\\nExpectations make economics special \
+$5\\\\%$\\n\\\\end{center}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box Out}{\
+\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\n%\
+TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Macroeconomics is \
+General\\\\ Equilibrium}\\n\\n\\\\begin{center}\\nMarkets are \
+interconnected\\n\\n\\\\FRAME{ftbpF}{4.094in}{1.8801in}{0pt}{}{}{Figure}{\\\\\
+special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 4.094in;height \
+1.8801in;depth\\n0pt;original-width 10.165in;original-height \
+4.6319in;cropleft \\\"0\\\";croptop\\n\\\"1\\\";cropright \
+\\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZU5W01.wmf';tempfile-properties \\\"XPR\\\";}}\\n\
+\\nNeed to analyse all markets \
+together\\n\\\\end{center}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box Out}{\
+\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\n%\
+TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Simple General\\\\ \
+Equilibrium model}\\n\\n\\\\begin{itemize}\\n\\\\item Utility function \
+$U(c_{t}^{i})$ intertemporally separable\\n\\n\\\\item Household $i$ receives \
+known endowment $\\\\left\\\\{ y_{t}^{i}\\\\right\\\\}\\n_{0}^{\\\\infty \
+}$\\n\\n\\\\item Savings $\\\\left\\\\{ a_{t}^{i}\\\\right\\\\} \
+_{0}^{\\\\infty }$ remunerated at\\nknown interest rate $\\\\left\\\\{ \
+R_{t}=(1+r_{t})\\\\right\\\\} _{0}^{\\\\infty }$\\n\\n\\\\item No production, \
+labour market, firms or uncertainty\\n\\n\\\\item Household chooses savings \
+and consumption\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: \
+Box Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%\
+EndExpansion\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%\
+BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{\
+BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{\
+Household budget constraint}\\n\\nFlow budget \
+constraint%\\n\\\\begin{equation*}\\na_{t+s+1}^{i}=R_{t+s}a_{t+s}^{i}+y_{t+s}^\
+{i}-c_{t+s}^{i}\\\\text{ for }\\\\forall\\ns\\\\geq 0\\n\\\\end{equation*}\\n\
+\\nIterate \
+forward%\\n\\\\begin{equation*}\\n\\\\prod\\\\limits_{t=0}^{T}R_{t}^{-1}a_{T+\
+1}^{i}=a_{0}^{i}+\\\\sum_{t=0}^{T}\\\\left(\\n\\\\prod\\\\limits_{s=0}^{t}R_{\
+s}^{-1}\\\\right) \\\\left( \
+y_{t}^{i}-c_{t}^{i}\\\\right)\\n\\\\end{equation*}\\n\\nPresent value budget \
+constraint%\\n\\\\begin{equation*}\\n\\\\frac{a_{T+1}^{i}}{\\\\tilde{R}_{T}}=\
+a_{0}^{i}+\\\\dsum\\\\limits_{t=0}^{T}\\\\frac{%\\ny_{t}^{i}-c_{t}^{i}}{\\\\\
+tilde{R}_{t}}\\\\text{ with }\\\\tilde{R}%\\n_{t}=R_{0}R_{1}R_{2}\\\\ldots \
+R_{t}\\n\\\\end{equation*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box Out}{\
+\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\n%\
+TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Transversality \
+condition}\\n\\n\\\\begin{itemize}\\n\\\\item No Ponzi condition to rule out \
+explosive borrowing%\\n\\\\begin{equation*}\\n\\\\underset{T\\\\rightarrow \\\
+\\infty }{\\\\lim }\\\\frac{a_{T+1}^{i}}{\\\\tilde{R}_{T}}\\\\geq \
+0\\n\\\\end{equation*}\\n\\n\\\\item Present value of terminal saving cannot \
+be negative\\n\\n\\\\item Condition holds with equality as not optimal to \
+save in limit\\n\\n\\\\item Present value budget \
+constraint%\\n\\\\begin{equation*}\\n\\\\dsum\\\\limits_{t=0}^{\\\\infty \
+}\\\\frac{c_{t}^{i}}{\\\\tilde{R}_{t}}%\\n=a_{0}^{i}+\\\\dsum\\\\limits_{t=0}^\
+{\\\\infty \
+}\\\\frac{y_{t}^{i}}{\\\\tilde{R}_{t}}\\n\\\\end{equation*}\\n\\n\\\\item \
+Present value of consumption = Present value of \
+resources\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Household problem}%\\n\\\
+\\begin{gather*}\\n\\\\underset{\\\\{c_{t+s}^{i},a_{t+s+1}^{i}\\\\}}{\\\\max \
+}\\\\underset{s=0}{\\\\overset{%\\n\\\\infty }{\\\\sum }}\\\\beta \
+^{s}U(c_{t+s}^{i}) \\\\\\\\[0.3cm]\\n\\\\text{s.t.} \
+\\\\\\\\[0.3cm]\\na_{t+s+1}^{i}=R_{t+s}a_{t+s}^{i}+y_{t+s}^{i}-c_{t+s}^{i}\\\\\
+text{ for }\\\\forall\\ns\\\\geq 0 \\\\\\\\[0.3cm]\\na_{t}^{i}\\\\text{ \
+given,}\\\\underset{T\\\\rightarrow \\\\infty }{\\\\lim \
+}\\\\frac{%\\na_{T+1}^{i}}{\\\\tilde{R}_{T}}\\\\geq \
+0\\n\\\\end{gather*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Method \\\\#1:\\\\ \
+Direct substitution}\\n\\nSubstitute for $c_{t+s}^{i}$ in utility function \
+using flow budget \
+constraint%\\n\\\\begin{equation*}\\n\\\\underset{\\\\{a_{t+s+1}^{i}\\\\}}{\\\
+\\max }\\\\underset{s=0}{\\\\overset{\\\\infty }{\\\\sum }}%\\n\\\\beta \
+^{s}U(R_{t+s}a_{t+s}^{i}+y_{t+s}^{i}-a_{t+s+1}^{i})\\n\\\\end{equation*}\\n\\\
+nFirst order condition with respect to \
+$a_{t+1}^{i}$%\\n\\\\begin{equation*}\\n-U_{c^{i},t}+\\\\beta \
+U_{c^{i},t+1}R_{t+1}=0\\n\\\\end{equation*}\\n\\nIntertemporal Euler equation \
+for consumption%\\n\\\\begin{equation*}\\n\\\\beta \
+R_{t+1}\\\\frac{U_{c^{i},t+1}}{U_{c^{i},t}}-1=0\\n\\\\end{equation*}\\n\\n%\
+TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Method \\\\#2:\\\\ \
+Graphical}\\n\\nExpand utility \
+function%\\n\\\\begin{equation*}\\n\\\\underset{s=0}{\\\\overset{\\\\infty }{\
+\\\\sum }}\\\\beta\\n^{s}U(c_{t+s}^{i})=U(c_{t}^{i})+\\\\beta U(c_{t+1}^{i})+\
+\\\\ldots =\\\\bar{U}\\n\\\\end{equation*}\\n\\nTotal differentiation holding \
+$\\\\bar{U}$ and $c_{t+s}^{i}$ constant for $%\\n\\\\forall s\\\\geq 2$ \\n\\\
+\\begin{equation*}\\n\\\\frac{dc_{t+1}^{i}}{dc_{t}^{i}}=-\\\\frac{1}{\\\\beta \
+}\\\\frac{U_{c^{i},t}}{%\\nU_{c^{i},t+1}}=\\\\text{MRS}\\n\\\\end{equation*}\\\
+n\\nIndifference curve in $(c_{t}^{i},c_{t+1}^{i})$ \
+space\\n\\n\\\\begin{center}\\n$\\\\FRAME{itbpF}{0.8406in}{0.7437in}{0in}{}{}{\
+Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 0.8406in;height \
+0.7437in;depth\\n0in;original-width 2.7086in;original-height \
+2.3886in;cropleft \\\"0\\\";croptop\\n\\\"1\\\";cropright \
+\\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'graphics/PEZU5W02.bmp';tempfile-properties \
+\\\"XPR\\\";}}$\\n\\\\end{center}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: \
+Box Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%\
+EndExpansion\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%\
+BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{\
+BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Method \
+\\\\#2:\\\\ Graphical}\\n\\nExpand budget \
+constraint%\\n\\\\begin{equation*}\\na_{t+2}^{i}=R_{t+1}\\\\left( \
+R_{t}a_{t}^{i}+y_{t}^{i}-c_{t}^{i}\\\\right)\\n+y_{t+1}^{i}-c_{t+1}^{i}\\n\\\\\
+end{equation*}\\n\\nTotal differentiation holding \
+$a_{t}^{i},a_{t+2}^{i},y_{t}^{i}$ and $%\\ny_{t+1}^{i}$ constant \
+\\n\\\\begin{equation*}\\n\\\\frac{dc_{t+1}^{i}}{dc_{t}^{i}}=-R_{t+1}=\\\\\
+text{MRT}\\n\\\\end{equation*}\\n\\nBudget constraint in \
+$(c_{t}^{i},c_{t+1}^{i})$ \
+space\\n\\n\\\\begin{center}\\n$\\\\FRAME{itbpF}{0.8328in}{0.7403in}{0in}{}{}{\
+Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 0.8328in;height \
+0.7403in;depth\\n0in;original-width 2.6809in;original-height \
+2.3748in;cropleft \\\"0\\\";croptop\\n\\\"1\\\";cropright \
+\\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'graphics/PEZU5W03.bmp';tempfile-properties \
+\\\"XPR\\\";}}$\\n\\\\end{center}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: \
+Box Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%\
+EndExpansion\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%\
+BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{\
+BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Method \
+\\\\#2:\\\\ Graphical}\\n\\nOptimising household sets MRS=MRT \
+\\n\\\\begin{equation*}\\n\\\\beta \
+R_{t+1}\\\\frac{U_{c^{i},t+1}}{U_{c^{i},t}}-1=0\\n\\\\end{equation*}\\n\\\
+nOptimality in $(c_{t}^{i},c_{t+1}^{i})$ \
+space\\n\\n\\\\begin{center}\\n$\\\\FRAME{itbpF}{0.857in}{0.7567in}{0in}{}{}{\
+Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 0.857in;height \
+0.7567in;depth\\n0in;original-width 2.7639in;original-height 2.431in;cropleft \
+\\\"0\\\";croptop\\n\\\"1\\\";cropright \\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'graphics/PEZU5W04.bmp';tempfile-properties \
+\\\"XPR\\\";}}$\\n\\\\end{center}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: \
+Box Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%\
+EndExpansion\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%\
+BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{\
+BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Method \
+\\\\#3:\\\\ Value function}\\n\\nValue \
+function%\\n\\\\begin{equation*}\\nV(a_{t}^{i})=\\\\underset{a_{t+1}^{i}}{\\\\\
+max }\\\\left[\\nU(R_{t}a_{t}^{i}+y_{t}^{i}-a_{t+1}^{i})+\\\\beta \
+V(a_{t+1}^{i})\\\\right]\\n\\\\end{equation*}\\n\\nFirst order condition \
+\\n\\\\begin{equation*}\\nU_{c^{i},t}=\\\\beta V^{\\\\prime }(a_{t+1}^{i})\\n\
+\\\\end{equation*}\\n\\nDifferentiate $V(a_{t}^{i})$ with respect to \
+$a_{t}^{i}$%\\n\\\\begin{equation*}\\nV^{\\\\prime \
+}(a_{t}^{i})=U_{c^{i},t}R_{t}\\n\\\\end{equation*}\\n\\nRoll forward one \
+period and substitute%\\n\\\\begin{equation*}\\n\\\\beta \
+R_{t+1}\\\\frac{U_{c^{i},t+1}}{U_{c^{i},t}}-1=0\\n\\\\end{equation*}\\n\\n%\
+TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Method \\\\#4:\\\\ \
+Lagrangian}\\n\\nDefine (present value) Lagrangian%\\n\\\\begin{equation*}\\n\
+\\\\mathcal{L}^{i}=\\\\underset{s=0}{\\\\overset{\\\\infty }{\\\\sum \
+}}\\\\beta\\n^{s}U(c_{t+s}^{i})+\\\\underset{s=0}{\\\\overset{\\\\infty \
+}{\\\\sum }}\\\\lambda\\n_{t+s}^{i}\\\\beta \
+^{s}\\\\left(\\nR_{t+s}a_{t+s}^{i}+y_{t+s}^{i}-c_{t+s}^{i}-a_{t+s+1}^{i}\\\\\
+right)\\n\\\\end{equation*}\\n\\nFirst order conditions \
+\\n\\\\begin{equation*}\\n\\\\begin{tabular}{llc}\\n$c_{t}^{i}$ & : & \
+$U_{c^{i},t}=\\\\lambda _{t}^{i}$ \\\\\\\\ \\n$c_{t+1}^{i}$ & : & \
+$U_{c^{i},t+1}=\\\\lambda _{t+1}^{i}$ \\\\\\\\ \\n$a_{t+1}^{i}$ & : & \
+$\\\\lambda _{t+1}^{i}\\\\beta R_{t+1}-\\\\lambda \
+_{t}^{i}=0$%\\n\\\\end{tabular}%\\n\\\\end{equation*}\\n\\nCombine%\\n\\\\\
+begin{equation*}\\n\\\\beta \
+R_{t+1}\\\\frac{U_{c^{i},t+1}}{U_{c^{i},t}}-1=0\\n\\\\end{equation*}\\n\\n%\
+TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Interpretation of Euler \
+equation for consumption}\\n\\n\\\\begin{itemize}\\n\\\\item Growth in \
+$c_{t}^{i}$ determined by $R_{t}$ through growth in \
+$%\\nU_{c^{i},t}$%\\n\\\\begin{equation*}\\n\\\\beta \
+R_{t+1}\\\\frac{U_{c^{i},t+1}}{U_{c^{i},t}}-1=0\\n\\\\end{equation*}\\n\\n\\\\\
+item $\\\\beta R_{t+1}=1\\\\rightarrow $ $U_{c^{i},t+1}=U_{c^{i},t}$ \
+$\\\\rightarrow \\n$ $c_{t+1}^{i}=c_{t}^{i}$\\n\\n\\\\item $\\\\beta \
+R_{t+1}>1\\\\rightarrow $ $U_{c^{i},t+1}<U_{c^{i},t}\\\\rightarrow $ \
+$%\\nc_{t+1}^{i}>c_{t}^{i}$\\n\\n\\\\item $\\\\beta R_{t+1}<1\\\\rightarrow $ \
+$U_{c^{i},t+1}>U_{c^{i},t}\\\\rightarrow $ \
+$%\\nc_{t+1}^{i}<c_{t}^{i}$\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{\
+Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{General \
+equilibrium}\\n\\n\\\\begin{itemize}\\n\\\\item Aggregate household Euler \
+equations with log \
+utility%\\n\\\\begin{equation*}\\n\\\\sum_{i}c_{t+1}^{i}=\\\\beta \
+R_{t+1}\\\\sum_{i}c_{t}^{i}\\n\\\\end{equation*}\\n\\n\\\\item Market \
+clearing with no aggregate \
+savings%\\n\\\\begin{equation*}\\n\\\\sum_{i}y_{t}^{i}=\\\\sum_{i}c_{t}^{i}\\\
+\\ \\\\ \\\\text{for }\\\\forall t\\n\\\\end{equation*}\\n\\n\\\\item Market \
+interest rate%\\n\\\\begin{equation*}\\n\\\\beta \
+R_{t+1}=\\\\frac{\\\\sum_{i}y_{t+1}^{i}}{\\\\sum_{i}y_{t}^{i}}=\\\\frac{\\\\\
+bar{y}%\\n_{t+1}}{\\\\bar{y}_{t}}\\n\\\\end{equation*}\\n\\n\\\\item Behaves \
+as a representative agent \
+economy!\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Neoclassical growth \
+theory}\\n\\n\\\\begin{itemize}\\n\\\\item Endowment economy as production \
+economy where only labour enters\\nproduction function\\n\\n\\\\item \
+Accumulation of savings at household but not aggregate level\\n\\n\\\\item \
+Workhorse model in macroeconomics is Walrasian economy with \
+aggregate\\ncapital accumulation\\n\\n\\\\item Maintain exogenous labour \
+supply decisions for now\\n\\n\\\\item Overlapping generations (OLG)\\\\ vs \
+representative agent \
+(Ramsey)\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Two-generation \
+OLG}\\n\\n\\\\begin{center}\\nWork when young and retire when \
+old%\\n\\\\begin{equation*}\\n\\\\FRAME{itbpF}{4.0957in}{1.42in}{0in}{}{}{\
+Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 4.0957in;height \
+1.42in;depth\\n0in;original-width 13.5559in;original-height 4.6389in;cropleft \
+\\\"0\\\";croptop\\n\\\"1\\\";cropright \\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZU5W05.bmp';tempfile-properties \\\"XPR\\\";}}\\n\
+\\\\end{equation*}\\n\\n$C_{t}^{Y}$ and $C_{t+1}^{O}$ are consumption when \
+young and old\\n\\\\end{center}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Household in \
+OLG}\\n\\n\\\\begin{itemize}\\n\\\\item Household supplies labour and capital \
+to firm\\n\\n\\\\item Work when young for labour income $w_{t}$ and retire \
+when old\\n\\n\\\\item $K_{t+1}^{O}$ is saving of young which pays return \
+$r_{t+1}$ when old\\n\\n\\\\item Capital depreciates at 100\\\\% after \
+production\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Household problem in \
+OLG}\\n\\nHousehold maximises \
+utility%\\n\\\\begin{gather*}\\n\\\\underset{C_{t}^{Y},C_{t+1}^{O},K_{t+1}^{O}\
+}{\\\\max }\\\\left( \\\\log\\nC_{t}^{Y}+\\\\beta \\\\log \
+C_{t+1}^{O}\\\\right) \\\\\\\\\\n\\\\text{s.t.} \
+\\\\\\\\\\nC_{t}^{Y}+K_{t+1}^{O}=w_{t} \
+\\\\\\\\\\nC_{t+1}^{O}=r_{t+1}K_{t+1}^{O}\\n\\\\end{gather*}\\n\\nFirst order \
+condition is Euler equation for \
+consumption%\\n\\\\begin{equation*}\\n\\\\frac{C_{t+1}^{O}}{\\\\beta \
+C_{t}^{Y}}=r_{t+1}\\n\\\\end{equation*}\\n\\n%TCIMACRO{\\\\TeXButton{\
+Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Firm problem in \
+OLG}\\n\\nFirm maximises \
+profits%\\n\\\\begin{equation*}\\n\\\\underset{K_{t},L_{t}}{\\\\max \
+}\\\\left( K_{t}^{\\\\alpha \
+}L_{t}^{1-\\\\alpha\\n}-w_{t}L_{t}-r_{t}K_{t}\\\\right)\\n\\\\end{equation*}\\\
+n\\nFirst order conditions define factor \
+prices%\\n\\\\begin{eqnarray*}\\nr_{t} &=&\\\\alpha K_{t}^{\\\\alpha \
+-1}L_{t}^{1-\\\\alpha } \\\\\\\\\\nw_{t} &=&\\\\left( 1-\\\\alpha \\\\right) \
+K_{t}^{\\\\alpha }L_{t}^{-\\\\alpha \
+}\\n\\\\end{eqnarray*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Equilibrium in \
+OLG}\\n\\nEquilibrium is a sequence \\n\\\\begin{equation*}\\n\\\\left\\\\{ \
+r_{t},w_{t},C_{t}^{Y},C_{t}^{O},K_{t+1}^{O},K_{t},L_{t}\\\\right\\\\}\\n_{t=0}\
+^{\\\\infty \
+}\\n\\\\end{equation*}\\n\\ns.t.\\n\\n\\\\begin{enumerate}\\n\\\\item \
+$\\\\left\\\\{ C_{t}^{Y},C_{t}^{O},K_{t+1}^{O}\\\\right\\\\} $ solves \
+household\\nproblem given $\\\\left\\\\{ r_{t},w_{t}\\\\right\\\\} \
+$\\n\\n\\\\item $\\\\left\\\\{ K_{t},L_{t}\\\\right\\\\} $ solves firm \
+problem given $\\\\left\\\\{\\nr_{t},w_{t}\\\\right\\\\} $\\n\\n\\\\item \
+Markets clear $K_{t}=K_{t}^{O}$,~$L_{t}=1$ and \
+$%\\nC_{t}^{Y}+C_{t}^{O}+K_{t+1}=K_{t}^{\\\\alpha }L_{t}^{1-\\\\alpha \
+}$\\n\\n\\\\item $K_{t}$ given\\n\\n\\\\item \
+Transversality\\n\\\\end{enumerate}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: \
+Box Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%\
+EndExpansion\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%\
+BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{\
+BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{\
+Calculating equilibrium in OLG}\\n\\nEuler equation for consumption and \
+household budget constraint \
+imply%\\n\\\\begin{equation*}\\n\\\\frac{r_{t+1}K_{t+1}^{O}}{\\\\beta \
+\\\\left( w_{t}-K_{t+1}^{O}\\\\right) \
+}=r_{t+1}\\n\\\\end{equation*}\\n\\nSubstitute in for wage and market \
+clearing conditions%\\n\\\\begin{equation*}\\nK_{t+1}=\\\\frac{\\\\beta \
+}{1+\\\\beta }\\\\left( 1-\\\\alpha \\\\right) K_{t}^{\\\\alpha \
+}\\n\\\\end{equation*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Equilibrium in \
+OLG}\\n\\nMonotonic convergent dynamics to steady \
+state%\\n\\\\begin{equation*}\\n\\\\FRAME{itbpF}{2.1274in}{2.0107in}{0in}{}{}{\
+Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 2.1274in;height \
+2.0107in;depth\\n0in;original-width 6.9998in;original-height \
+6.6115in;cropleft \\\"0\\\";croptop\\n\\\"1\\\";cropright \
+\\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZU5W06.bmp';tempfile-properties \\\"XPR\\\";}}\\n\
+\\\\end{equation*}\\n\\nIn long run all variables \
+constant\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box Out}{\\\\transboxout}}%\
+\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\n%TCIMACRO{\\\\\
+TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\end{frame}%\\n%\
+EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\begin{frame}}}%\\n%\
+BeginExpansion\\n\\\\begin{frame}{Check Kaldor (1957) \
+facts}\\n\\n\\\\begin{enumerate}\\n\\\\item Output per worker grows at a \
+roughly constant rate \
+\\n%TCIMACRO{\\\\TeXButton{NO}{\\\\textcolor{red}{NO}}}%\\n%BeginExpansion\\n\
+\\\\textcolor{red}{NO}%\\n%EndExpansion\\n\\n\\\\item Capital per worker \
+grows over time \
+\\n%TCIMACRO{\\\\TeXButton{NO}{\\\\textcolor{red}{NO}}}%\\n%BeginExpansion\\n\
+\\\\textcolor{red}{NO}%\\n%EndExpansion\\n\\n\\\\item Capital/output ratio is \
+roughly constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Rate of return to \
+capital is constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Shares of capital and \
+labour in net income are nearly constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Real wage grows over \
+time \\n%TCIMACRO{\\\\TeXButton{NO}{\\\\textcolor{red}{NO}}}%\\n%\
+BeginExpansion\\n\\\\textcolor{red}{NO}%\\n%EndExpansion\\n\\n\\\\item Ratios \
+of consumption and investment to GDP\\\\ are constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\\\end{enumerate}\\n\\n%TCIMACRO{\
+\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Technological change in \
+OLG}\\n\\nAdd (labour-augmenting) technological progress in \
+production\\n\\n\\\\begin{equation*}\\nY_{t}=K_{t}^{\\\\alpha }\\\\left( \
+\\\\theta _{t}L_{t}\\\\right) ^{1-\\\\alpha }\\\\text{ with }%\\n\\\\theta \
+_{t+1}=(1+g)\\\\theta _{t}\\n\\\\end{equation*}\\n\\nEuler equation for \
+consumption \
+unchanged%\\n\\\\begin{equation*}\\n\\\\frac{C_{t+1}^{O}}{\\\\beta \
+C_{t}^{Y}}=r_{t+1}\\n\\\\end{equation*}\\n\\nFirm profit maximising \
+conditions%\\n\\\\begin{eqnarray*}\\nr_{t} &=&\\\\alpha K_{t}^{\\\\alpha \
+-1}\\\\left( \\\\theta _{t}L_{t}\\\\right) ^{1-\\\\alpha }%\\n\\\\text{ } \
+\\\\\\\\\\nw_{t} &=&\\\\left( 1-\\\\alpha \\\\right) K_{t}^{\\\\alpha \
+}\\\\theta _{t}\\\\left( \\\\theta\\n_{t}L_{t}\\\\right) ^{-\\\\alpha \
+}\\n\\\\end{eqnarray*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Equilibrium in OLG with \
+technological change}\\n\\nEuler equation for consumption and household \
+budget constraint as \
+before%\\n\\\\begin{equation*}\\n\\\\frac{r_{t+1}K_{t+1}^{O}}{\\\\beta \
+\\\\left( w_{t}-K_{t+1}^{O}\\\\right) \
+}=r_{t+1}\\n\\\\end{equation*}\\n\\nSubstitute in for wage and market \
+clearing conditions%\\n\\\\begin{equation*}\\nK_{t+1}=\\\\frac{\\\\beta \
+}{1+\\\\beta }\\\\left( 1-\\\\alpha \\\\right) K_{t}^{\\\\alpha \
+}\\\\theta\\n_{t}^{1-\\\\alpha }\\n\\\\end{equation*}\\n\\nNormalised \
+equilibrium%\\n\\\\begin{equation*}\\n\\\\tilde{K}_{t+1}=\\\\frac{\\\\beta }{\
+\\\\left( 1+\\\\beta \\\\right) (1+g)}\\\\left( 1-\\\\alpha\\n\\\\right) \
+\\\\tilde{K}_{t}^{\\\\alpha }\\\\text{ with \
+}\\\\tilde{K}_{t}=\\\\frac{K_{t}}{%\\n\\\\theta _{t}}\\n\\\\end{equation*}\\n\
+\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Equilibrium in OLG with \
+technological change}\\n\\nMonotonic convergent dynamics to steady state in $\
+\\\\tilde{K}_{t}$ \
+\\n\\\\begin{equation*}\\n\\\\FRAME{itbpF}{1.0153in}{0.9919in}{0in}{}{}{\
+Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 1.0153in;height \
+0.9919in;depth\\n0in;original-width 6.5829in;original-height \
+6.4307in;cropleft \\\"0\\\";croptop\\n\\\"1\\\";cropright \
+\\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZU5W07.bmp';tempfile-properties \\\"XPR\\\";}}\\n\
+\\\\end{equation*}\\n\\nIn long run\\n\\n\\\\begin{enumerate}\\n\\\\item \
+$\\\\theta _{t},K_{t},Y_{t},C_{t}^{Y},C_{t}^{O}$ grow at rate \
+$g$\\n\\n\\\\item $K_{t}/Y_{t}$ constant\\n\\n\\\\item $r_{t}=\\\\alpha \
+K_{t}^{\\\\alpha -1}\\\\left( \\\\theta _{t}L_{t}\\\\right)\\n^{1-\\\\alpha \
+}$ $=\\\\alpha \\\\tilde{K}_{t}^{\\\\alpha -1}$ constant\\n\\n\\\\item \
+$w_{t}=\\\\left( 1-\\\\alpha \\\\right) K_{t}^{\\\\alpha }\\\\theta \
+_{t}\\\\left( \\\\theta\\n_{t}L_{t}\\\\right) ^{-\\\\alpha }=\\\\left( \
+1-\\\\alpha \\\\right) \\\\tilde{K}_{t}^{\\\\alpha\\n}\\\\theta _{t}$ grows \
+at rate $g$\\n\\\\end{enumerate}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Check Kaldor (1957) \
+facts}\\n\\n\\\\begin{enumerate}\\n\\\\item Output per worker grows at a \
+roughly constant rate \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Capital per worker \
+grows over time \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Capital/output ratio \
+is roughly constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Rate of return to \
+capital is constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Shares of capital and \
+labour in net income are nearly constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Real wage grows over \
+time \\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%\
+BeginExpansion\\n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item \
+Ratios of consumption and investment to GDP\\\\ are constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\\\end{enumerate}\\n\\n%TCIMACRO{\
+\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Ramsey\\\\ \
+model}\\n\\n\\\\begin{itemize}\\n\\\\item Retain existing assumptions\\n\\n\\\
+\\begin{enumerate}\\n\\\\item Log utility\\n\\n\\\\item Labour supply \
+exogenous\\n\\n\\\\item Constant returns to scale in production \
+function\\n\\n\\\\item 100\\\\%\\\\ depreciation\\n\\n\\\\item Technology \
+grows at rate $g$\\n\\\\end{enumerate}\\n\\n\\\\item Replace OLG\\\\ \
+structure with infinitely-lived representative \
+agent\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}\
+}}%\\n%BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\\
+TeXButton{BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}\
+{Household problem in Ramsey}\\n\\nRepresentative household maximises \
+lifetime utility%\\n\\\\begin{gather*}\\n\\\\underset{\\\\{C_{t+s},K_{t+s+1}\\\
+\\}}{\\\\max }\\\\underset{s=0}{\\\\overset{\\\\infty }{\\\\sum \\n}}\\\\beta \
+^{s}\\\\log C_{t+s} \\\\\\\\\\n\\\\text{s.t.} \
+\\\\\\\\\\nK_{t+s+1}=r_{t+s}K_{t+s}+w_{t+s}-C_{t+s}\\\\text{ for }\\\\forall \
+s\\\\geq 0 \\\\\\\\\\nK_{t}\\\\text{ given,}\\\\underset{T\\\\rightarrow \
+\\\\infty }{\\\\lim }\\\\frac{K_{T+1}}{%\\n\\\\tilde{R}_{T}}\\\\geq \
+0\\n\\\\end{gather*}\\n\\nEuler equation for consumption as \
+before%\\n\\\\begin{equation*}\\n\\\\frac{C_{t+1}}{\\\\beta C_{t}}=r_{t+1}\\n\
+\\\\end{equation*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Firm problem in \
+Ramsey}\\n\\nFirm maximises \
+profits%\\n\\\\begin{equation*}\\n\\\\underset{K_{t},L_{t}}{\\\\max \
+}\\\\left( K_{t}^{\\\\alpha }\\\\left( \\\\theta\\n_{t}L_{t}\\\\right) ^{1-\\\
+\\alpha }-w_{t}L_{t}-r_{t}K_{t}\\\\right)\\n\\\\end{equation*}\\n\\nFirst \
+order conditions define factor prices as \
+before%\\n\\\\begin{eqnarray*}\\nr_{t} &=&\\\\alpha K_{t}^{\\\\alpha \
+-1}\\\\left( \\\\theta _{t}L_{t}\\\\right) ^{1-\\\\alpha }%\\n\\\\text{ } \
+\\\\\\\\\\nw_{t} &=&\\\\left( 1-\\\\alpha \\\\right) K_{t}^{\\\\alpha \
+}\\\\theta _{t}\\\\left( \\\\theta\\n_{t}L_{t}\\\\right) ^{-\\\\alpha \
+}\\n\\\\end{eqnarray*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Equilibrium in \
+Ramsey}\\n\\nEquilibrium is a sequence \
+\\n\\\\begin{equation*}\\n\\\\left\\\\{ \
+r_{t},w_{t},C_{t},K_{t},L_{t}\\\\right\\\\} _{t=0}^{\\\\infty \
+}\\n\\\\end{equation*}\\n\\ns.t.\\n\\n\\\\begin{enumerate}\\n\\\\item \
+$\\\\left\\\\{ C_{t},K_{t+1}\\\\right\\\\} $ solves household problem given \
+$%\\n\\\\left\\\\{ r_{t},w_{t}\\\\right\\\\} $\\n\\n\\\\item $\\\\left\\\\{ \
+K_{t},L_{t}\\\\right\\\\} $ solves firm problem given \
+$\\\\left\\\\{\\nr_{t},w_{t}\\\\right\\\\} $\\n\\n\\\\item Markets clear \
+$L_{t}=1$ and $C_{t}+K_{t+1}=Y_{t}=K_{t}^{\\\\alpha }\\\\left(\\n\\\\theta \
+_{t}L_{t}\\\\right) ^{1-\\\\alpha }$\\n\\n\\\\item $K_{t}$ \
+given\\n\\n\\\\item \
+Transversality\\n\\\\end{enumerate}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: \
+Box Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%\
+EndExpansion\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%\
+BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{\
+BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{\
+Equilibrium in Ramsey}\\n\\nEuler equation for consumption and return to \
+capital imply%\\n\\\\begin{equation*}\\n\\\\frac{1}{C_{t}}=\\\\alpha \\\\beta \
+\\\\frac{1}{C_{t+1}}K_{t+1}^{\\\\alpha -1}\\\\left(\\n\\\\theta _{t+1}L_{t+1}\
+\\\\right) ^{1-\\\\alpha }\\n\\\\end{equation*}\\n\\nSubstitute in for market \
+clearing conditions and \
+rearrange%\\n\\\\begin{equation*}\\n\\\\frac{Y_{t+1}}{C_{t+1}}=-\\\\frac{1}{\\\
+\\alpha \\\\beta }+\\\\frac{1}{\\\\alpha \\\\beta }%\\n\\\\frac{Y_{t}}{C_{t}}\
+\\\\text{ }\\n\\\\end{equation*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Transversality}%\\n\\\\\
+begin{equation*}\\n\\\\FRAME{itbpF}{2.7614in}{2.4742in}{0in}{}{}{Figure}{\\\\\
+special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 2.7614in;height \
+2.4742in;depth\\n0in;original-width 9.1108in;original-height \
+8.1526in;cropleft \\\"0\\\";croptop\\n\\\"1\\\";cropright \
+\\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PF6ZJM0H.bmp';tempfile-properties \\\"XPR\\\";}}\\n\
+\\\\end{equation*}\\n\\n\\\\begin{center}\\nOnly stable solution is \
+$\\\\frac{Y_{t}}{C_{t}}=\\\\frac{1}{1-\\\\alpha \\\\beta }$ for \
+$%\\n\\\\forall t\\\\geq \
+0$\\n\\\\end{center}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Equilibrium in Ramsey \
+with technological change}\\n\\n\\\\begin{enumerate}\\n\\\\item \
+$Y_{t}/C_{t},$ $Y_{t}/K_{t+1}$ constant\\n\\n\\\\item $\\\\theta \
+_{t},C_{t},K_{t},Y_{t}$ grow at rate $g$\\n\\n\\\\item $r_{t}=\\\\alpha \
+K_{t}^{\\\\alpha -1}\\\\left( \\\\theta _{t}L_{t}\\\\right)\\n^{1-\\\\alpha \
+}$ $=\\\\alpha \\\\tilde{K}_{t}^{\\\\alpha -1}$ constant\\n\\n\\\\item \
+$w_{t}=\\\\left( 1-\\\\alpha \\\\right) K_{t}^{\\\\alpha }\\\\theta \
+_{t}\\\\left( \\\\theta\\n_{t}L_{t}\\\\right) ^{-\\\\alpha }=\\\\left( \
+1-\\\\alpha \\\\right) \\\\theta _{t}\\\\tilde{K}%\\n_{t}^{\\\\alpha }$ grows \
+at rate $g$\\n\\\\end{enumerate}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Check Kaldor (1957) \
+facts}\\n\\n\\\\begin{enumerate}\\n\\\\item Output per worker grows at a \
+roughly constant rate \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Capital per worker \
+grows over time \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Capital/output ratio \
+is roughly constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Rate of return to \
+capital is constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Shares of capital and \
+labour in net income are nearly constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item Real wage grows over \
+time \\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%\
+BeginExpansion\\n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\n\\\\item \
+Ratios of consumption and investment to GDP\\\\ are constant \
+\\n%TCIMACRO{\\\\TeXButton{YES}{\\\\textcolor{red}{YES}}}%\\n%BeginExpansion\\\
+n\\\\textcolor{red}{YES}%\\n%EndExpansion\\n\\\\end{enumerate}\\n\\n%TCIMACRO{\
+\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Endogenous growth\\\\ \
+models}\\n\\n\\\\begin{itemize}\\n\\\\item Growth is exogenous in \
+neoclassical OLG\\\\ and Ramsey models\\n\\n\\\\item Endogenous growth models \
+seek to explain growth\\n\\n\\\\item \\\\textbf{Extended accumulation} \
+\\\\textbf{models} overcome diminishing\\nreturns to capital by adding \
+externalities in capital accumulation\\n(learning-by-doing and AK\\\\ model) \
+or additional factors of production\\\\\\n(human capital)\\n\\n\\\\item \
+\\\\textbf{Innovation models} explain technological progress as a\\nfunction \
+of endogenous variables (investment in research and \
+development)\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\\
+end{frame}}}%\\n%BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%\
+TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\
+\\begin{frame}{Learning-by-doing, Arrow \
+(1962)}\\n\\n\\\\begin{itemize}\\n\\\\item Production function of \
+representative firm%\\n\\\\begin{equation*}\\nY_{t}=K_{t}^{\\\\alpha \
+}\\\\left( \\\\theta _{t}L_{t}\\\\right) ^{1-\\\\alpha }\\\\text{ with \
+}%\\n\\\\theta _{t}\\\\text{ given}\\n\\\\end{equation*}\\n\\n\\\\item \
+Knowledge advances as aggregate capital stock \
+increases%\\n\\\\begin{equation*}\\n\\\\theta _{t}=\\\\psi \
+K_{t-1}\\n\\\\end{equation*}\\n\\n\\\\item Aggregate production linear in \
+$K_{t}$ when $K_{t}\\\\approx K_{t-1}$ \
+\\n\\\\begin{equation*}\\nY_{t}=\\\\psi ^{1-\\\\alpha \
+}K_{t}L_{t}^{1-\\\\alpha }\\n\\\\end{equation*}\\n\\n\\\\item Returns are \
+decreasing at firm level but constant in \
+aggregate\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{\
+frame}}}%\\n%BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\
+\\\\TeXButton{BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{\
+frame}{Equilibrium in AK\\\\ model}\\n\\nFactor \
+prices%\\n\\\\begin{eqnarray*}\\nr_{t} &=&\\\\alpha K_{t}^{\\\\alpha \
+-1}\\\\left( \\\\theta _{t}L_{t}\\\\right) ^{1-\\\\alpha\\n}\\\\approx \
+\\\\alpha \\\\psi ^{1-\\\\alpha } \\\\\\\\\\nw_{t} &=&\\\\left( 1-\\\\alpha \
+\\\\right) K_{t}^{\\\\alpha }\\\\theta _{t}\\\\left( \
+\\\\theta\\n_{t}L_{t}\\\\right) ^{-\\\\alpha }\\\\approx \\\\left( \
+1-\\\\alpha \\\\right) \\\\psi ^{1-\\\\alpha\\n}K_{t}\\n\\\\end{eqnarray*}\\n\
+\\nEuler equation for \
+consumption%\\n\\\\begin{equation*}\\n\\\\frac{C_{t+1}}{C_{t}}=\\\\beta \
+r_{t+1}=\\\\alpha \\\\beta \\\\psi ^{1-\\\\alpha \
+}\\n\\\\end{equation*}\\n\\nTransversality as before $\\\\rightarrow $ \
+$\\\\theta _{t},C_{t},K_{t},Y_{t}$ grow\\nat constant rate $\\\\alpha \
+\\\\beta \\\\psi ^{1-\\\\alpha }$\\n\\n%TCIMACRO{\\\\TeXButton{Transition: \
+Box Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%\
+EndExpansion\\n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%\
+BeginExpansion\\n\\\\end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{\
+BeginFrame}{\\\\begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Growth \
+accounting}\\n\\n\\\\begin{itemize}\\n\\\\item Take logs and differentiate \
+$Y_{t}=K_{t}^{\\\\alpha }\\\\left( \\\\theta\\n_{t}L_{t}\\\\right) \
+^{1-\\\\alpha \
+}$%\\n\\\\begin{equation*}\\n\\\\frac{1}{Y_{t}}\\\\frac{dY_{t}}{dt}=\\\\alpha \
+\\\\frac{1}{K_{t}}\\\\frac{dK_{t}}{dt}%\\n+(1-\\\\alpha \
+)\\\\frac{1}{\\\\theta _{t}}\\\\frac{d\\\\theta _{t}}{dt}+(1-\\\\alpha \
+)\\\\frac{1}{%\\nL_{t}}\\\\frac{dL_{t}}{dt}\\n\\\\end{equation*}\\n\\n\\\\\
+item $\\\\alpha \\\\approx 1/3$ as it is capital share of income in \
+equilibrium%\\n\\\\begin{eqnarray*}\\n\\\\text{Growth in }Y_{t}\\\\text{ } \
+&=&\\\\frac{1}{3}\\\\times \\\\text{Growth in }K_{t} \
+\\\\\\\\\\n&&+\\\\frac{2}{3}\\\\times \\\\left( \\\\text{Growth in }\\\\theta \
+_{t}+\\\\text{Growth in \
+}%\\nL_{t}\\\\right)\\n\\\\end{eqnarray*}\\n\\\\end{itemize}\\n\\n%TCIMACRO{\\\
+\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Growth accounting in the \
+20th century, Crafts \
+(2000)}%\\n\\\\begin{eqnarray*}\\n&&\\\\FRAME{itbpF}{2.8816in}{0.7308in}{0in}{\
+}{}{Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \\\"GRAPHIC\\\
+\";maintain-aspect-ratio TRUE;display\\n\\\"USEDEF\\\";valid_file \
+\\\"T\\\";width 2.8816in;height 0.7308in;depth\\n0in;original-width \
+7.1356in;original-height 1.759in;cropleft \
+\\\"0\\\";croptop\\n\\\"1\\\";cropright \\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZY6C0A.wmf';tempfile-properties \\\"XPR\\\";}} \\\
+\\\\\\\\n&&\\\\FRAME{itbpF}{2.8816in}{0.7308in}{0in}{}{}{Figure}{\\\\special{\
+language\\n\\\"Scientific Word\\\";type \\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 2.8816in;height \
+0.7308in;depth\\n0in;original-width 7.1373in;original-height 1.759in;cropleft \
+\\\"0\\\";croptop\\n\\\"1\\\";cropright \\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZY6R0B.wmf';tempfile-properties \\\"XPR\\\";}} \\\
+\\\\\\\\n&&\\\\FRAME{itbpF}{2.8824in}{0.7316in}{0in}{}{}{Figure}{\\\\special{\
+language\\n\\\"Scientific Word\\\";type \\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 2.8824in;height \
+0.7316in;depth\\n0in;original-width 7.1356in;original-height \
+1.7599in;cropleft \\\"0\\\";croptop\\n\\\"1\\\";cropright \
+\\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZY6Z0C.wmf';tempfile-properties \\\"XPR\\\";}}\\n\
+\\\\end{eqnarray*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Growth accounting in \
+emerging markets \
+1960-1994}\\n\\n\\\\begin{equation*}\\n\\\\FRAME{itbpF}{3.525in}{1.7677in}{\
+0in}{}{}{Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \
+\\\"GRAPHIC\\\";maintain-aspect-ratio \
+TRUE;display\\n\\\"USEDEF\\\";valid_file \\\"T\\\";width 3.525in;height \
+1.7677in;depth\\n0in;original-width 13.9857in;original-height \
+6.9583in;cropleft \\\"0\\\";croptop\\n\\\"1\\\";cropright \
+\\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZYF80H.bmp';tempfile-properties \\\"XPR\\\";}}\\n\
+\\\\end{equation*}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box \
+Out}{\\\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\\
+n%TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n%TCIMACRO{\\\\TeXButton{BeginFrame}{\\\\\
+begin{frame}}}%\\n%BeginExpansion\\n\\\\begin{frame}{Growth accounting for \
+the UK 1970-2013, ONS\\\\ \
+(2015)}\\n\\n\\\\begin{equation*}\\n\\\\FRAME{itbpF}{4.0361in}{1.9441in}{0in}{\
+}{}{Figure}{\\\\special{language\\n\\\"Scientific Word\\\";type \\\"GRAPHIC\\\
+\";maintain-aspect-ratio TRUE;display\\n\\\"USEDEF\\\";valid_file \
+\\\"T\\\";width 4.0361in;height 1.9441in;depth\\n0in;original-width \
+13.3614in;original-height 6.3892in;cropleft \
+\\\"0\\\";croptop\\n\\\"1\\\";cropright \\\"1\\\";cropbottom \
+\\\"0\\\";tempfilename\\n'PEZYHY0I.bmp';tempfile-properties \\\"XPR\\\";}}\\n\
+\\\\end{equation*}\\n\\n\\\\begin{center}\\nAverage UK growth of 2.1\\\\% \
+decomposes into contributions of 0.4\\\\% from\\ntechnology, 1.2\\\\% from \
+capital and 0.5\\\\% from \
+labour\\n\\\\end{center}\\n\\n%TCIMACRO{\\\\TeXButton{Transition: Box Out}{\\\
+\\transboxout}}%\\n%BeginExpansion\\n\\\\transboxout%\\n%EndExpansion\\n%\
+TCIMACRO{\\\\TeXButton{EndFrame}{\\\\end{frame}}}%\\n%BeginExpansion\\n\\\\\
+end{frame}%\\n%EndExpansion\\n\\n\\\\end{document}\"\>"], "Output",
+ CellChangeTimes->{
+  3.7819306537790728`*^9, {3.7819307634249167`*^9, 
+   3.7819307922325287`*^9}},ExpressionUUID->"bf46a6fe-e640-46ce-859f-\
+6510914fa6db"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Convert to list of lines", "Subsection",
+ CellChangeTimes->{{3.781861682588024*^9, 
+  3.7818616851641045`*^9}},ExpressionUUID->"38a01bf6-3dad-435b-b67e-\
+c92398ba4acb"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"sciwdoclist", "=", 
+   RowBox[{"StringSplit", "[", 
+    RowBox[{"sciwdocstringclean", ",", "\"\<\\n\>\""}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.7818616935497293`*^9, 3.781861751848273*^9}, {
+  3.781929351322662*^9, 
+  3.7819293657366414`*^9}},ExpressionUUID->"689604ca-6bdb-442c-8799-\
+2ee117074874"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"nlinesStart", "=", 
+   RowBox[{"Length", "@", "sciwdoclist"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781853400404765*^9, 3.781853402630336*^9}, {
+  3.781853433338482*^9, 3.781853435905634*^9}, {3.7818584001671457`*^9, 
+  3.781858400635785*^9}, {3.7818617338862524`*^9, 
+  3.7818617342103863`*^9}},ExpressionUUID->"74cc067e-e716-4d6e-927a-\
+3a27eddcee3c"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Find stuff", "Subsection",
+ CellChangeTimes->{{3.781862303102801*^9, 
+  3.7818623048071985`*^9}},ExpressionUUID->"62587fa2-5018-4030-9c31-\
+1b495ad07e94"],
+
+Cell[CellGroupData[{
+
+Cell["Packages", "Subsubsection",
+ CellChangeTimes->{{3.7818623124090843`*^9, 
+  3.781862313294752*^9}},ExpressionUUID->"a78919a1-599b-4200-bcae-\
+d940b44f7b64"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+    "packagelinespos", ",", "packagelines", ",", "packagesbyline", ",", 
+     "packagesoverall"}], "}"}], "=", 
+   RowBox[{"FindLines", "[", 
+    RowBox[{"sciwdoclist", ",", "packageRegEx"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7818551075543194`*^9, 3.7818551324802074`*^9}, {
+   3.781855204732956*^9, 3.7818552192809258`*^9}, {3.781855652966422*^9, 
+   3.7818556826770535`*^9}, {3.7818557894064465`*^9, 3.7818557955347943`*^9}, 
+   3.7818562280405226`*^9, {3.7818563727150793`*^9, 3.781856376416989*^9}, 
+   3.7818622422517333`*^9, 3.7818623338766737`*^9, 
+   3.7818645487212467`*^9},ExpressionUUID->"e12f4547-c674-4195-b7e4-\
+93d497743908"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["New Environments", "Subsubsection",
+ CellChangeTimes->{{3.7818762395967417`*^9, 
+  3.7818762438087025`*^9}},ExpressionUUID->"a95f2c9f-b2d3-4c39-9115-\
+29f357ce7933"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+    "newenvlinespos", ",", "newenvlines", ",", "newenvsbyline", ",", 
+     "newenvsoverall"}], "}"}], "=", 
+   RowBox[{"FindLines", "[", 
+    RowBox[{"sciwdoclist", ",", "newenvRegEx"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781876259880916*^9, 
+  3.781876279388491*^9}},ExpressionUUID->"fe344ef0-ba9a-4acb-8d38-\
+71a950e66a78"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Theme", "Subsubsection",
+ CellChangeTimes->{{3.7818766407830462`*^9, 3.7818766413670573`*^9}, 
+   3.7818767074269004`*^9},ExpressionUUID->"abf9c4f3-ca15-43d4-b878-\
+1ddbdc2ed810"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+    "themelinespos", ",", "themelines", ",", "themesbyline", ",", 
+     "themesoverall"}], "}"}], "=", 
+   RowBox[{"FindLines", "[", 
+    RowBox[{"sciwdoclist", ",", "themeRegEx"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7818766551909018`*^9, 3.7818766598029084`*^9}, {
+  3.7818766998468695`*^9, 
+  3.781876699854868*^9}},ExpressionUUID->"583538c7-e099-4719-aa41-\
+42e27e77e55b"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Set counter", "Subsubsection",
+ CellChangeTimes->{{3.7818773958019*^9, 
+  3.7818773971498537`*^9}},ExpressionUUID->"2955459b-2b02-4f87-8fef-\
+e0898c6a8b30"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+    "setcounterlinespos", ",", "setcounterlines", ",", "setcountersbyline", 
+     ",", "setcountersoverall"}], "}"}], "=", 
+   RowBox[{"FindLines", "[", 
+    RowBox[{"sciwdoclist", ",", "setcounterRegEx"}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781877413269867*^9, 
+  3.781877414705897*^9}},ExpressionUUID->"de71f1a9-9b05-415e-9b60-\
+ae9b60aa6564"]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Drop stuff", "Subsection",
+ CellChangeTimes->{{3.7818583536985793`*^9, 3.78185835526766*^9}, {
+  3.781873813284135*^9, 
+  3.781873835794402*^9}},ExpressionUUID->"5be0223e-4024-4f8a-a991-\
+7f924b4f1912"],
+
+Cell[CellGroupData[{
+
+Cell["Drop lines", "Subsubsection",
+ CellChangeTimes->{{3.781864711932355*^9, 
+  3.781864713040527*^9}},ExpressionUUID->"c5f2ce63-565b-4d87-9a0c-\
+9f197e706f62"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cleandroppedlines", "=", 
+   RowBox[{"DeleteCases", "[", 
+    RowBox[{
+     RowBox[{"DropLinesContainingRegEx", "[", 
+      RowBox[{"sciwdoclist", ",", "droplineRegEx"}], "]"}], ",", "\"\<\>\""}],
+     "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781865798806772*^9, 3.7818658028187447`*^9}, 
+   3.7819292918621826`*^9},ExpressionUUID->"864ddb81-64da-4a5b-8fdc-\
+7811b23ea3db"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Delete undesirable text", "Subsubsection",
+ CellChangeTimes->{{3.781865600141093*^9, 
+  3.7818656080095215`*^9}},ExpressionUUID->"9c0b5576-f422-442b-b8f5-\
+d40ac3a029f8"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cleanedundesirable", "=", 
+   RowBox[{"StringReplace", "[", 
+    RowBox[{"cleandroppedlines", ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"#", "\[Rule]", "\"\<\>\""}], "&"}], "/@", "deleteRegEx"}]}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781865610981521*^9, 3.7818656688775682`*^9}, {
+  3.781865707629064*^9, 3.7818657296187773`*^9}, {3.7818658466192327`*^9, 
+  3.7818658700272274`*^9}, {3.7818727590279555`*^9, 3.781872763903927*^9}, {
+  3.781872800267896*^9, 3.7818728038718953`*^9}, {3.781872858823905*^9, 
+  3.781872920633847*^9}, {3.7818729573338466`*^9, 3.781872966534021*^9}, {
+  3.7818729978272147`*^9, 3.781873006959223*^9}, {3.7818731389083567`*^9, 
+  3.781873145116349*^9}},ExpressionUUID->"269fa4d0-af9a-4e01-80c4-\
+b5ac08d6a7e3"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Change text", "Subsubsection",
+ CellChangeTimes->{{3.781873800791687*^9, 
+  3.781873802247818*^9}},ExpressionUUID->"feb23ead-2b30-4337-a71e-\
+1b5a81880f69"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"cleanedchangedbody", "=", 
+   RowBox[{"StringReplace", "[", 
+    RowBox[{"cleanedundesirable", ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"#", "\[Rule]", "\"\<\>\""}], "&"}], "/@", "replaceRegEx"}]}], 
+    "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.7818738042268667`*^9, 3.781873837734449*^9}, 
+   3.781877100933598*^9, {3.7818777634818554`*^9, 
+   3.7818777639615984`*^9}},ExpressionUUID->"8de2b0df-267d-4199-9443-\
+b12d0d4d5aa6"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Create new doc", "Section",
+ CellChangeTimes->{{3.781929027952361*^9, 
+  3.781929030326639*^9}},ExpressionUUID->"3c6a025d-59db-471e-99b8-\
+9cf5c4a61c4b"],
+
+Cell[CellGroupData[{
+
+Cell["Restore to long string", "Subsection",
+ CellChangeTimes->{{3.781929041397814*^9, 
+  3.781929044053444*^9}},ExpressionUUID->"43c305c6-14ce-4566-970b-\
+4102e2cfbcff"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"doc", "=", 
+   RowBox[{"StringJoin", "[", 
+    RowBox[{"Riffle", "[", 
+     RowBox[{"cleanedchangedbody", ",", "\"\<\\n\>\""}], "]"}], "]"}]}], 
+  ";"}]], "Input",
+ CellChangeTimes->{{3.7818730309067926`*^9, 3.7818730345027833`*^9}, 
+   3.7818738265161295`*^9, {3.7818777663616076`*^9, 3.7818777792976294`*^9}, {
+   3.781928680877077*^9, 3.7819286838451414`*^9}, 3.7819287708294754`*^9, 
+   3.781928904004805*^9, 3.781929105693223*^9, 
+   3.781930664075946*^9},ExpressionUUID->"83714899-eaf6-43f7-8cdc-\
+2c1c2bdf5526"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Change frame divisions", "Subsection",
+ CellChangeTimes->{{3.7818778098138123`*^9, 3.7818778123057566`*^9}, {
+  3.781928999796174*^9, 
+  3.7819290021081333`*^9}},ExpressionUUID->"91b70a6d-1904-44af-b5a7-\
+8d7bfca75e7e"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"doc", "=", 
+   RowBox[{"StringReplace", "[", 
+    RowBox[{"doc", ",", 
+     RowBox[{
+     "\"\<\\\\begin{frame}\>\"", "\[Rule]", 
+      "\"\<\\\\end{frame}\\n\\n%----------------------------------------------\
+--\\n%------------------------------------------------\\n\\n\\\\begin{frame}\>\
+\""}]}], "]"}]}], ";"}]], "Input",
+ CellChangeTimes->{{3.781929084120036*^9, 3.781929096304682*^9}, {
+  3.7819291763483887`*^9, 3.781929255796057*^9}, {3.7819307138546495`*^9, 
+  3.7819307219933825`*^9}, {3.7819307734027967`*^9, 
+  3.781930784090646*^9}},ExpressionUUID->"56841393-b529-4bd3-af6c-\
+c56db22a22b0"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "Export as txt (",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    RowBox[{"T", 
+     AdjustmentBox["E",
+      BoxBaselineShift->0.5,
+      BoxMargins->{{-0.3, 0}, {0, 0}}], "X"}],
+    SingleLetterItalics->False], TraditionalForm]],ExpressionUUID->
+  "33e504cb-90aa-48f4-a250-d67a2d5da41e"],
+ " seems to cause problems)"
+}], "Subsection",
+ CellChangeTimes->{{3.781929068514243*^9, 
+  3.7819290792619*^9}},ExpressionUUID->"f0e3dda0-6722-4797-8610-bf54b25ff496"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Export", "[", 
+   RowBox[{"\"\<doc.txt\>\"", ",", "doc"}], "]"}], ";"}]], "Input",
+ CellChangeTimes->{{3.7819286879843903`*^9, 3.781928702757981*^9}, {
+  3.7819289072386885`*^9, 
+  3.781928907316719*^9}},ExpressionUUID->"f984cc69-ff77-4721-9912-\
+70c09fdbc8cf"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1272, 634},
+WindowMargins->{{Automatic, -3}, {Automatic, 1}},
+FrontEndVersion->"11.2 for Microsoft Windows (64-bit) (September 10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 158, 3, 67, "Section",ExpressionUUID->"4ce6c12f-95a4-4ec7-b387-32032cb3ffc7"],
+Cell[CellGroupData[{
+Cell[763, 29, 159, 3, 53, "Subsection",ExpressionUUID->"c502ebe2-1237-4f0f-9398-2028a56ed312"],
+Cell[925, 34, 342, 8, 28, "Input",ExpressionUUID->"e4dc6504-5f01-43d3-b871-e0d517d7f7fb"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[1304, 47, 157, 3, 53, "Subsection",ExpressionUUID->"b7ecca81-2c50-4e2b-b147-7e2a8967622b"],
+Cell[CellGroupData[{
+Cell[1486, 54, 195, 3, 44, "Subsubsection",ExpressionUUID->"4f58d210-c1ca-45e8-b354-9504c682def8"],
+Cell[1684, 59, 4393, 102, 390, "Input",ExpressionUUID->"be4dccd3-dc66-4788-8daa-84beccd69fdf"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[6114, 166, 256, 6, 44, "Subsubsection",ExpressionUUID->"bf64454c-d6d7-4949-b03e-ae26acf7f071"],
+Cell[6373, 174, 626, 16, 28, "Input",ExpressionUUID->"8ec0afa6-f00e-4057-8a9b-e8acf71f3f16"],
+Cell[7002, 192, 439, 11, 28, "Input",ExpressionUUID->"d6189623-8fbf-4541-a693-7f1f718e4673"]
+}, Open  ]]
+}, Open  ]]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[7502, 210, 168, 3, 53, "Section",ExpressionUUID->"67344577-53b5-49a2-9bbf-e3d55078276a"],
+Cell[CellGroupData[{
+Cell[7695, 217, 230, 4, 53, "Subsection",ExpressionUUID->"38c6542e-b466-45ee-933f-a4f1daa9d460"],
+Cell[CellGroupData[{
+Cell[7950, 225, 170, 3, 44, "Subsubsection",ExpressionUUID->"f60adaa9-9b3f-4a36-bf54-56c8c978201b"],
+Cell[8123, 230, 481, 10, 28, "Input",ExpressionUUID->"d290a587-14f8-4b6e-95d2-e7c6f963525c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8641, 245, 168, 3, 44, "Subsubsection",ExpressionUUID->"702132da-7e7c-4a8b-a640-646edf585853"],
+Cell[8812, 250, 309, 9, 28, "Input",ExpressionUUID->"0bd4ed77-aaf3-4271-922b-02e19517f0e4"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9158, 264, 181, 3, 44, "Subsubsection",ExpressionUUID->"0b39541b-2fe6-413f-8e40-d2d8746c5048"],
+Cell[9342, 269, 326, 8, 28, "Input",ExpressionUUID->"b3111f78-64cd-4905-8f77-5372af60d6cf"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[9705, 282, 187, 3, 44, "Subsubsection",ExpressionUUID->"29034da3-e6d3-478d-a54f-762a093aaf75"],
+Cell[9895, 287, 292, 8, 28, "Input",ExpressionUUID->"4d2120f7-d30c-4dc6-b34e-f76294df4ff2"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10236, 301, 185, 3, 53, "Subsection",ExpressionUUID->"8146b545-6d5e-4761-a8ea-0581680c1ecd"],
+Cell[CellGroupData[{
+Cell[10446, 308, 197, 3, 44, "Subsubsection",ExpressionUUID->"4974f9bc-2184-4563-b5c8-b64385dea4ed"],
+Cell[10646, 313, 312, 8, 28, "Input",ExpressionUUID->"00fa86f7-85b4-41ef-b32b-4406e0c92fcc"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10995, 326, 186, 3, 44, "Subsubsection",ExpressionUUID->"89f67f7a-0418-4e3b-943d-7dca01ccfcae"],
+Cell[11184, 331, 415, 8, 28, "Input",ExpressionUUID->"3054dc62-a288-4a7d-a503-e66cbb83c998"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[11636, 344, 397, 6, 44, "Subsubsection",ExpressionUUID->"6a8eeb3b-7304-46e9-b8e3-2fe4bbc73750"],
+Cell[12036, 352, 500, 14, 28, "Input",ExpressionUUID->"69755051-0546-439c-a24b-19c8fc81c1c8"],
+Cell[12539, 368, 675, 13, 28, "Input",ExpressionUUID->"b896d36a-7345-4941-96d5-4871c59d68c7"],
+Cell[13217, 383, 784, 17, 28, "Input",ExpressionUUID->"a8a38447-458f-4dda-b2db-c47ccdd66072"],
+Cell[14004, 402, 1366, 23, 28, "Input",ExpressionUUID->"f31d50b9-8ef3-4fa7-a48c-fc755fd2e30a"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[15407, 430, 289, 5, 44, "Subsubsection",ExpressionUUID->"31106893-8537-44f1-bf71-5233941687cc"],
+Cell[15699, 437, 610, 13, 28, "Input",ExpressionUUID->"c5dc0660-34a9-492d-a7f8-4b915b2d3dbc"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[16346, 455, 356, 6, 44, "Subsubsection",ExpressionUUID->"2778c07d-8fa5-4cc2-b269-1660ca97ba94"],
+Cell[16705, 463, 805, 20, 28, "Input",ExpressionUUID->"392bfa32-8053-4c71-b0fb-6b6991c948c0"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[17571, 490, 219, 4, 67, "Section",ExpressionUUID->"fbbd63c4-6062-43f4-9bf1-d9dbaa56cd48"],
+Cell[CellGroupData[{
+Cell[17815, 498, 164, 3, 53, "Subsection",ExpressionUUID->"461b2e2a-49b7-44ee-be95-733a6833db2a"],
+Cell[17982, 503, 391, 10, 28, "Input",ExpressionUUID->"ceac724a-1d02-41eb-9287-8192d1b7852e"],
+Cell[18376, 515, 394, 9, 28, "Input",ExpressionUUID->"593a3985-7c97-48a6-83de-2ab445d5631f"],
+Cell[CellGroupData[{
+Cell[18795, 528, 571, 13, 28, "Input",ExpressionUUID->"b5582a43-d8ff-411c-a116-a9cd11111369"],
+Cell[19369, 543, 47170, 700, 25474, "Output",ExpressionUUID->"bf46a6fe-e640-46ce-859f-6510914fa6db"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[66588, 1249, 174, 3, 53, "Subsection",ExpressionUUID->"38a01bf6-3dad-435b-b67e-c92398ba4acb"],
+Cell[66765, 1254, 350, 9, 28, "Input",ExpressionUUID->"689604ca-6bdb-442c-8799-2ee117074874"],
+Cell[67118, 1265, 392, 8, 28, "Input",ExpressionUUID->"74cc067e-e716-4d6e-927a-3a27eddcee3c"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[67547, 1278, 160, 3, 53, "Subsection",ExpressionUUID->"62587fa2-5018-4030-9c31-1b495ad07e94"],
+Cell[CellGroupData[{
+Cell[67732, 1285, 161, 3, 44, "Subsubsection",ExpressionUUID->"a78919a1-599b-4200-bcae-d940b44f7b64"],
+Cell[67896, 1290, 719, 15, 28, "Input",ExpressionUUID->"e12f4547-c674-4195-b7e4-93d497743908"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[68652, 1310, 171, 3, 44, "Subsubsection",ExpressionUUID->"a95f2c9f-b2d3-4c39-9115-29f357ce7933"],
+Cell[68826, 1315, 403, 11, 28, "Input",ExpressionUUID->"fe344ef0-ba9a-4acb-8d38-71a950e66a78"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[69266, 1331, 185, 3, 44, "Subsubsection",ExpressionUUID->"abf9c4f3-ca15-43d4-b878-1ddbdc2ed810"],
+Cell[69454, 1336, 453, 12, 28, "Input",ExpressionUUID->"583538c7-e099-4719-aa41-42e27e77e55b"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[69944, 1353, 162, 3, 44, "Subsubsection",ExpressionUUID->"2955459b-2b02-4f87-8fef-e0898c6a8b30"],
+Cell[70109, 1358, 423, 11, 28, "Input",ExpressionUUID->"de71f1a9-9b05-415e-9b60-ae9b60aa6564"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[70581, 1375, 208, 4, 53, "Subsection",ExpressionUUID->"5be0223e-4024-4f8a-a991-7f924b4f1912"],
+Cell[CellGroupData[{
+Cell[70814, 1383, 161, 3, 44, "Subsubsection",ExpressionUUID->"c5f2ce63-565b-4d87-9a0c-9f197e706f62"],
+Cell[70978, 1388, 415, 10, 28, "Input",ExpressionUUID->"864ddb81-64da-4a5b-8fdc-7811b23ea3db"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[71430, 1403, 176, 3, 44, "Subsubsection",ExpressionUUID->"9c0b5576-f422-442b-b8f5-d40ac3a029f8"],
+Cell[71609, 1408, 798, 16, 28, "Input",ExpressionUUID->"269fa4d0-af9a-4e01-80c4-b5ac08d6a7e3"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[72444, 1429, 162, 3, 44, "Subsubsection",ExpressionUUID->"feb23ead-2b30-4337-a71e-1b5a81880f69"],
+Cell[72609, 1434, 478, 12, 28, "Input",ExpressionUUID->"8de2b0df-267d-4199-9443-b12d0d4d5aa6"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[73148, 1453, 159, 3, 67, "Section",ExpressionUUID->"3c6a025d-59db-471e-99b8-9cf5c4a61c4b"],
+Cell[CellGroupData[{
+Cell[73332, 1460, 170, 3, 53, "Subsection",ExpressionUUID->"43c305c6-14ce-4566-970b-4102e2cfbcff"],
+Cell[73505, 1465, 553, 12, 28, "Input",ExpressionUUID->"83714899-eaf6-43f7-8cdc-2c1c2bdf5526"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[74095, 1482, 225, 4, 53, "Subsection",ExpressionUUID->"91b70a6d-1904-44af-b5a7-8d7bfca75e7e"],
+Cell[74323, 1488, 637, 14, 86, "Input",ExpressionUUID->"56841393-b529-4bd3-af6c-c56db22a22b0"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[74997, 1507, 472, 14, 55, "Subsection",ExpressionUUID->"f0e3dda0-6722-4797-8610-bf54b25ff496"],
+Cell[75472, 1523, 296, 7, 28, "Input",ExpressionUUID->"f984cc69-ff77-4721-9912-70c09fdbc8cf"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

@@ -1,0 +1,54 @@
+\documentclass[authoryear,11pt]{elsarticle}
+
+%This eliminates the `Preprint submitted to...' footer on the first page
+\makeatletter
+\def\ps@pprintTitle{%
+ \let\@oddhead\@empty
+ \let\@evenhead\@empty
+ \def\@oddfoot{}%
+ \let\@evenfoot\@oddfoot}
+\makeatother
+
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{amsmath}
+\usepackage{morefloats}
+\usepackage{bbm}        %To allow \mathbb{1}
+
+\usepackage{rotating}   %To turn tables sidewaystable
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+%\onehalfspacing
+
+%\setlength{\parindent}{0pt}
+
+\usepackage[top=3.5cm,bottom=3.75cm,left=2.45cm,right=2.45cm]{geometry}% by courtesy of Mico
+
+\begin{document}
+\begin{frontmatter}
+\title{MFE Economics\\Lecture 3: Intuition}
+\end{frontmatter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Households}
+Solving a DSGE model of the sort we will be discussing comes down to collecting together a bunch of equations (capturing accounting identities, technological/resource constraints, market clearing conditions, conditions of individual optimality) and making assumptions about the driving exogenous shock processes (Normality in innovation, AR(1), etc.) The first set of equations we will consider are those that emerge from considering the opimization problem of a representative household (since \textit{in our models}, macroeconomic aggregates and competitive prices are what we are interested in and they do not depend on heterogeneity across agents).
+
+Our household seeks to choose a plan for consumption and labor supply in all periods and contingencies to maximize expected utility (from any starting point) given a period `felicity function' that takes consumption and labor supply as arguments, and which can also be affected by a preference shock, $Z_{t}$. Reflecting the fact that people tend to have a preference for immediate, rather than future consumption, all else equal, we introduce a discount factor $\beta \in (0,1)$. In some sense this reflects a planning horizon / mortality as, although our agent is infinitely lived, the distant future is heavily discounted in terms of its contribution to utility from the remainder of ones lifetime.
+
+We require that the \href{https://dictionary.cambridge.org/dictionary/english/felicity}{felicity} function satisfies some fairly natural restrictions in terms of how felicity depends on consumption and labor supplied. And we assert that $Z_{t}$ is to be interpreted in such a way that a higher value of $Z_{t}$ reflects increased marginal utility of consumption in $t$, relative to in other periods, all else equal. Ultimately it acts as a sort of impatience shock - an innovation to $Z_{t}$ which dies out but possibly at a slow rate, induces `impatience' in the agent (so higher $Z_{t}$ is a bit like a temporarily low $\beta$). The exact form of $U$ doesn't always need to be specified, beyond these basic properties, though when necessary we will typically assume it is of CRRA form or, the limiting case thereof, log utility.
+
+As discussed in a homework $\sigma$ can be interpreted as the coefficient of relative risk aversion and $\varphi$ as a parameter controlling how quickly the marginal distutility of labor increases with labor. Note that - as the intratemporal FOC later will suggest - $\varphi^{-1}$ is the Frisch elasticity of labor supply with respect to the real wage.
+
+Household choose their consumption and labor supply plans knowing that they must respect a sequence (one for each time period - and in each contingency) of `flow' or `period' budget constraints:
+\begin{equation*}
+P_{t} C_{t} + Q_{n,t} B_{t} \leq B_{t-1} + W_{t} N_{t} + D_{t}
+\end{equation*}
+so they earn wage income (and dividends - which we basically ignore in this course) and payoffs from the purchase
+
+\end{document}
+

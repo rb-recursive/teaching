@@ -1,0 +1,6 @@
+\beamer@sectionintoc {1}{Roadmap}{3}{0}{1}
+\beamer@sectionintoc {2}{Households}{7}{0}{2}
+\beamer@sectionintoc {3}{Firms}{26}{0}{3}
+\beamer@sectionintoc {4}{Equilibrium}{30}{0}{4}
+\beamer@sectionintoc {5}{Equilibrium - Nominal block}{51}{0}{5}
+\beamer@sectionintoc {6}{Summary}{57}{0}{6}

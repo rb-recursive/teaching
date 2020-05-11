@@ -1,0 +1,56 @@
+%----------------------------------------------------------------------------
+%Type of document
+\documentclass{beamer}
+
+%----------------------------------------------------------------------------
+%Packages
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{centernot}
+\usepackage{appendixnumberbeamer}
+
+%----------------------------------------------------------------------------
+%Local adjustments of settings and definitions
+\setcounter{MaxMatrixCols}{10}
+\setbeamertemplate{caption}[numbered]
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+%----------------------------------------------------------------------------
+%Beamer theme (Madrid and Frankfurt are good options)
+\usetheme{Madrid}
+
+%----------------------------------------------------------------------------
+%Start document
+\begin{document}
+
+%----------------------------------------------------------------------------
+%Front matter
+\title[Financial Frictions and Crises]{Financial Frictions and Crises}
+\author[Bidder]{Rhys Bidder}
+\institute[FRBSF]{Federal Reserve Bank of San Francisco}
+\date{Michaelmas Term 2019}
+\maketitle
+
+%----------------------------------------------------------------------------
+%Main body
+
+\begin{frame}{Disclaimer}
+
+The views expressed in this presentation, and all errors and omissions, should be regarded as those solely of the authors, and are not necessarily those of the Federal Reserve Bank of San Francisco, the Federal Reserve Board of Governors or the Federal Reserve System.
+
+\end{frame}
+
+\input{L_6_Capital}
+
+\input{L_6_Liquidity}
+
+\input{L_6_Pre_crisis}
+
+\input{L_6_Crisis}
+
+%\input{L_6_Post_crisis}
+
+\end{document}
