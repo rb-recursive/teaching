@@ -1,7 +1,0 @@
-\beamer@sectionintoc {1}{Households}{5}{0}{1}
-\beamer@sectionintoc {2}{Firms}{13}{0}{2}
-\beamer@sectionintoc {3}{Equilibrium - Non-policy Block}{28}{0}{3}
-\beamer@sectionintoc {4}{Equilibrium - Introducing Policy}{51}{0}{4}
-\beamer@sectionintoc {5}{Response to Shocks}{55}{0}{5}
-\beamer@sectionintoc {6}{Summary}{74}{0}{6}
-\beamer@sectionintoc {7}{Extra Slides}{76}{0}{7}

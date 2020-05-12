@@ -1,2 +1,0 @@
-\beamer@sectionintoc {1}{Monetary Policy in the New Keynesian Model}{3}{0}{1}
-\beamer@sectionintoc {2}{Zero lower bound and Policy responses}{28}{0}{2}
